@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.API", "NPS.API\NPS.API.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.Application", "NPS.Application\NPS.Application.csproj", "{924A5188-AEA3-4A16-B613-308DDFD17545}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.Infrastructure", "NPS.Infrastructure\NPS.Infrastructure.csproj", "{D683A7CF-8F0C-4818-8F0C-4BD66E32A221}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{924A5188-AEA3-4A16-B613-308DDFD17545}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{924A5188-AEA3-4A16-B613-308DDFD17545}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{924A5188-AEA3-4A16-B613-308DDFD17545}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D683A7CF-8F0C-4818-8F0C-4BD66E32A221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D683A7CF-8F0C-4818-8F0C-4BD66E32A221}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D683A7CF-8F0C-4818-8F0C-4BD66E32A221}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D683A7CF-8F0C-4818-8F0C-4BD66E32A221}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
