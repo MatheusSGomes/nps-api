@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.API", "NPS.API\NPS.API.csproj", "{FF6EF116-9DFC-48AC-8B1E-2F6A8F05FE7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.Application", "NPS.Application\NPS.Application.csproj", "{924A5188-AEA3-4A16-B613-308DDFD17545}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{FF6EF116-9DFC-48AC-8B1E-2F6A8F05FE7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF6EF116-9DFC-48AC-8B1E-2F6A8F05FE7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF6EF116-9DFC-48AC-8B1E-2F6A8F05FE7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{924A5188-AEA3-4A16-B613-308DDFD17545}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{924A5188-AEA3-4A16-B613-308DDFD17545}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{924A5188-AEA3-4A16-B613-308DDFD17545}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{924A5188-AEA3-4A16-B613-308DDFD17545}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
