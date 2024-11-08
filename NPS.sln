@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.Infrastructure", "NPS.I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.Core", "NPS.Core\NPS.Core.csproj", "{B1DAF125-7ED9-4898-AA17-C8D1D048DF2A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.Test", "NPS.Test\NPS.Test.csproj", "{B6C983B3-1117-4C0D-88C7-91ACC97C2252}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{B1DAF125-7ED9-4898-AA17-C8D1D048DF2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1DAF125-7ED9-4898-AA17-C8D1D048DF2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1DAF125-7ED9-4898-AA17-C8D1D048DF2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6C983B3-1117-4C0D-88C7-91ACC97C2252}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6C983B3-1117-4C0D-88C7-91ACC97C2252}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6C983B3-1117-4C0D-88C7-91ACC97C2252}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6C983B3-1117-4C0D-88C7-91ACC97C2252}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
