@@ -1,6 +1,6 @@
-namespace NPS.Test;
+using NPS.Core.Entities;
 
-// TODO: Implementar serviço para categorizar resposta em Promotor, Neutro ou Detrator.
+namespace NPS.Test;
 
 public class ClassificadorDeRespostaTest
 {
@@ -19,44 +19,8 @@ public class ClassificadorDeRespostaTest
     [InlineData(11, "Inválido")]
     public void ClassificaResposta(int respostaUsuario, string classificacaoEsperada)
     {
-        var resposta = new Resposta(respostaUsuario);
-        Assert.Equal(classificacaoEsperada, resposta.Classificar());
+        var resposta = new NpsResponse(
+            respostaUsuario, "Customer Name", "Customer Comment", "Customer Category");
+        Assert.Equal(classificacaoEsperada, resposta.Classify());
     }
-}
-
-public class Resposta
-{
-    private readonly int _respostaUsuario;
-
-    public Resposta(int respostaUsuario)
-    {
-        _respostaUsuario = respostaUsuario;
-    }
-
-    public string Classificar()
-    {
-        if (_respostaUsuario > 0 && _respostaUsuario < 7)
-        {
-            return Classificacao.Detrator.ToString();
-        }
-
-        if (_respostaUsuario >= 7 && _respostaUsuario <= 8)
-        {
-            return Classificacao.Neutro.ToString();
-        }
-
-        if (_respostaUsuario > 8 && _respostaUsuario <= 10)
-        {
-            return Classificacao.Promotor.ToString();
-        }
-
-        return "Inválido";
-    }
-}
-
-enum Classificacao
-{
-    Detrator = 1,
-    Neutro = 2,
-    Promotor = 3,
 }

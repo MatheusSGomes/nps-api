@@ -22,4 +22,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\NPS.Core\NPS.Core.csproj" />
+    </ItemGroup>
+
 </Project>
