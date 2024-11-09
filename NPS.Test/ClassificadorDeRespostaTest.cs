@@ -4,15 +4,23 @@ namespace NPS.Test;
 
 public class ClassificadorDeRespostaTest
 {
-    [Fact]
-    public void ClassificaResposta()
+    [Theory]
+    [InlineData(0, "Inválido")]
+    [InlineData(1, "Detrator")]
+    [InlineData(2, "Detrator")]
+    [InlineData(3, "Detrator")]
+    [InlineData(4, "Detrator")]
+    [InlineData(5, "Detrator")]
+    [InlineData(6, "Detrator")]
+    [InlineData(7, "Neutro")]
+    [InlineData(8, "Neutro")]
+    [InlineData(9, "Promotor")]
+    [InlineData(10, "Promotor")]
+    [InlineData(11, "Inválido")]
+    public void ClassificaResposta(int respostaUsuario, string classificacaoEsperada)
     {
-        var atualRespostaUsuario = 1;
-        string resultadoEsperado = Classificacao.Detrator.ToString();
-
-        var resposta = new Resposta(atualRespostaUsuario);
-
-        Assert.Equal(resultadoEsperado, resposta.Classificar());
+        var resposta = new Resposta(respostaUsuario);
+        Assert.Equal(classificacaoEsperada, resposta.Classificar());
     }
 }
 
@@ -32,12 +40,12 @@ public class Resposta
             return Classificacao.Detrator.ToString();
         }
 
-        if (_respostaUsuario >= 7 && _respostaUsuario < 8)
+        if (_respostaUsuario >= 7 && _respostaUsuario <= 8)
         {
             return Classificacao.Neutro.ToString();
         }
 
-        if (_respostaUsuario >= 8 && _respostaUsuario <= 10)
+        if (_respostaUsuario > 8 && _respostaUsuario <= 10)
         {
             return Classificacao.Promotor.ToString();
         }
