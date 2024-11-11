@@ -41,6 +41,6 @@ public class NpsResponse
             return Classificacao.Promotor.ToString();
         }
 
-        return "Inválido";
+        throw new Exception(NpsErrorMessage.InvalidScore);
     }
 }
