@@ -1,6 +1,3 @@
 namespace NPS.Core.DTOs.Response;
 
-public class NpsResponseOutputDto
-{
-    
-}
+public record NpsResponseOutputDto(int Score, string CustomerName);
