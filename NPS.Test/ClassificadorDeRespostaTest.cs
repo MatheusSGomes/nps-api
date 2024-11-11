@@ -29,10 +29,12 @@ public class ClassificadorDeRespostaTest
     [InlineData(11)]
     public void NaoDeveAtribuirNotaComClassificacaoInvalida(int respostaInvalidaUsuario)
     {
-        var response = new NpsResponse(respostaInvalidaUsuario,
-            "Customer Name", "Customer Comment", "Customer Category");
-
-        var msg = Assert.Throws<Exception>(() => response.Classify()).Message;
+        var msg = Assert.Throws<Exception>(() =>
+                new NpsResponse(respostaInvalidaUsuario,
+                    "Customer Name",
+                    "Customer Comment",
+                    "Customer Category"))
+            .Message;
 
         Assert.Equal(NpsErrorMessage.InvalidScore, msg);
     }

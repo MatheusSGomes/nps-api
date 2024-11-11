@@ -18,6 +18,10 @@ public class NpsResponse
 
     public NpsResponse(int score, string customerName, string comment, string category)
     {
+        // Validation
+        if (score <= 0 || score >= 11)
+            throw new Exception(NpsErrorMessage.InvalidScore);
+
         _score = score;
         _customerName = customerName;
         _comment = comment;
