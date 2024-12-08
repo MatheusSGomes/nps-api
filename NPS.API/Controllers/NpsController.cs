@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using NPS.Core.DTOs.Request;
-using NPS.Core.DTOs.Response;
 using NPS.Core.Entities;
+using MediatR;
+using NPS.Application.NpsCQ.ViewModels;
 
 namespace NPS.API.Controllers;
 
@@ -9,10 +10,17 @@ namespace NPS.API.Controllers;
 [Route("nps/responses")]
 public class NpsController : ControllerBase
 {
-    [HttpPost]
-    public NpsResponseOutputDto SaveUserNpsScore(NpsRequest request)
+    private readonly IMediator _mediator;
+
+    public NpsController(IMediator mediator)
     {
-        var nps = new NpsResponse(request.Score, request.CustomerName, request.Comment, request.Category);
-        return new NpsResponseOutputDto(request.Score, request.CustomerName);
+        _mediator = mediator;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<NpsResponseViewModel>> SaveUserNpsScore(NpsCommand command)
+    {
+        var response = await _mediator.Send(command);
+        return Ok(response);
     }
 }
