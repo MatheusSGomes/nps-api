@@ -1,6 +1,7 @@
 ### Visão Geral do NPS
 
-O NPS (Net Promoter Score) é uma métrica de satisfação que mede a probabilidade de os clientes recomendarem uma empresa para amigos ou familiares. Os clientes respondem à pergunta: *"De 0 a 10, o quanto você recomendaria nossa empresa?"* As respostas são classificadas em três grupos:
+O NPS (Net Promoter Score) é uma métrica de satisfação que mede a probabilidade de os clientes recomendarem uma empresa para amigos ou familiares. 
+Os clientes respondem à pergunta: *"De 0 a 10, o quanto você recomendaria nossa empresa?"* As respostas são classificadas em três grupos:
 
 - **Promotores (9-10)**: Clientes altamente satisfeitos, que provavelmente recomendariam a empresa.
 - **Neutros (7-8)**: Clientes satisfeitos, mas menos propensos a recomendar.
@@ -108,3 +109,9 @@ O cálculo do NPS é feito subtraindo a porcentagem de Detratores da porcentagem
   - Preparar uma breve documentação para o uso da API e instruções de instalação/configuração.
 
 Essas etapas cobrem desde a configuração do projeto até o teste final da API, com foco em uma abordagem modular e baseada em testes para garantir a qualidade do código.
+
+---
+
+Utilizar técnicas de indexação no banco de dados, especialmente nas colunas Score, Category e CreatedAt, para melhorar a performance de consultas.
+
+Para dados grandes, considere o uso de cache para armazenar o NPS atual ou os resumos de respostas.
