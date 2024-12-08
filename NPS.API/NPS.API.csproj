@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NPS.Application\NPS.Application.csproj" />
       <ProjectReference Include="..\NPS.Core\NPS.Core.csproj" />
     </ItemGroup>
 
