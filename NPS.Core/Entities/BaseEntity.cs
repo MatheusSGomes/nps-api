@@ -7,4 +7,10 @@ public class BaseEntity
     public DateTime createdBy;
     public DateTime updatedAt;
     public DateTime updatedBy;
+
+    public BaseEntity()
+    {
+        createdAt = DateTime.Now;
+        updatedAt = DateTime.Now;
+    }
 }

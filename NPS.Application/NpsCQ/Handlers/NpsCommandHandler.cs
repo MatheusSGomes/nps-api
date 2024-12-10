@@ -26,9 +26,6 @@ public class NpsCommandHandler : IRequestHandler<NpsCommand, NpsResponseViewMode
         // Salvo no banco (classifico na busca)
         // Classifico (salvo no banco)
 
-
-        throw new NotImplementedException();
-
         return new NpsResponseViewModel(nps.Score, nps.CustomerName);
     }
 }
