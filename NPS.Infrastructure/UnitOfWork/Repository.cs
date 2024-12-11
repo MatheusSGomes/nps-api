@@ -4,11 +4,11 @@ using NPS.Infrastructure.Persistence;
 
 namespace NPS.Infrastructure.UnitOfWork;
 
-public class BaseRepository<T> : IBaseRepository<T> where T : class
+public class Repository<T> : IBaseRepository<T> where T : class
 {
     private readonly NpsDbContext _context;
 
-    public BaseRepository(NpsDbContext context)
+    public Repository(NpsDbContext context)
     {
         _context = context;
     }
