@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 namespace NPS.Infrastructure.UnitOfWork;
 
-public interface IBaseRepository<T>
+public interface IRepository<T>
 {
     // Expression - Encapsulamento da expressão lambda
     // Func<TipoRecebido, TipoRetornado> - Expressão lambda, recebe generic e retorna boolean
@@ -13,4 +13,5 @@ public interface IBaseRepository<T>
     Task<T> Update(T commandUpdate);
     Task Delete(T entity);
     Task DeleteRange(List<T> range);
+    Task<int> Count();
 }
