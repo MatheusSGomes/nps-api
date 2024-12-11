@@ -46,4 +46,9 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         _context.Set<T>().RemoveRange(range);
         return Task.CompletedTask;
     }
+
+    public Task<int> Count()
+    {
+        return _context.Set<T>().CountAsync();
+    }
 }
