@@ -1,3 +1,4 @@
+using NPS.Core.Entities;
 using NPS.Core.Interfaces.Repositorios;
 using NPS.Infrastructure.Persistence;
 
@@ -10,5 +11,10 @@ public class NpsRepository : INpsRepository
     public NpsRepository(NpsDbContext context)
     {
         _context = context;
+    }
+
+    public void Create(Nps nps)
+    {
+        _context.Set<Nps>().Add(nps);
     }
 }
