@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 var configuration = builder.Configuration;
 
 builder.Services.AddDbContext<NpsDbContext>(options =>
-    options.UseSqlServer(configuration["ConnectionString"]));
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(NpsCommandHandler).Assembly));

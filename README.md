@@ -115,3 +115,22 @@ Essas etapas cobrem desde a configuração do projeto até o teste final da API,
 Utilizar técnicas de indexação no banco de dados, especialmente nas colunas Score, Category e CreatedAt, para melhorar a performance de consultas.
 
 Para dados grandes, considere o uso de cache para armazenar o NPS atual ou os resumos de respostas.
+
+---
+
+## Configurações do projeto
+
+Comando para gerar uma migration:
+```bash
+dotnet ef migrations add Initial --project ./NPS.Infrastructure/ --startup-project ./NPS.API/
+```
+
+Para desfazer a migração:
+```bash
+dotnet ef migrations remove
+```
+
+Comando para aplicar a migration no banco de dados:
+```bash
+dotnet ef database update --project ./NPS.Infrastructure/ --startup-project ./NPS.API/
+```
