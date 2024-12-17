@@ -18,14 +18,7 @@ public class NpsCommandHandler : IRequestHandler<NpsCommand, NpsResponseViewMode
     public async Task<NpsResponseViewModel> Handle(NpsCommand request, CancellationToken cancellationToken)
     {
         var nps = Nps.CreateResponse(request.Score, request.CustomerName, request.Comment);
-
-        // _unitOfWork.Create(nps);
-        // _unitOfWork.Commit(); (esse é feito internamente)
-
-        // Estratégias:
-        // Salvo no banco (classifico na busca)
-        // Classifico (salvo no banco)
-
+        _unitOfWork.NpsRepository.Create(nps);
         return new NpsResponseViewModel(nps.Score, nps.CustomerName);
     }
 }
