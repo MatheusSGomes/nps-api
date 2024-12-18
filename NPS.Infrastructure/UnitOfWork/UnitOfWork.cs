@@ -17,7 +17,7 @@ public class UnitOfWork : IUnitOfWork
 
     public INpsRepository NpsRepository => _npsRepository ?? new NpsRepository(_context);
 
-    public async void Commit()
+    public async Task Commit()
     {
         await _context.SaveChangesAsync();
     }

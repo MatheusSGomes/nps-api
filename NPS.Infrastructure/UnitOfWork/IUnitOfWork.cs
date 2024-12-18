@@ -5,5 +5,5 @@ namespace NPS.Infrastructure.UnitOfWork;
 public interface IUnitOfWork
 {
     public INpsRepository NpsRepository { get; }
-    void Commit();
+    Task Commit();
 }

@@ -40,7 +40,7 @@ app.Use(async (context, next) =>
 
     // Recupero o UnitOfWork para aplicar o commit (SaveChanges)
     var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));
-    unitOfWork.Commit();
+    await unitOfWork.Commit();
 });
 
 app.UseHttpsRedirection();
