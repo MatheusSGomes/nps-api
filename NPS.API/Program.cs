@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using NPS.Application.NpsCQ.Handlers;
+using NPS.Application.NpsCQ.Queries;
 using NPS.Core.Interfaces.Repositorios;
+using NPS.Infrastructure.Data.Queries;
 using NPS.Infrastructure.Persistence;
 using NPS.Infrastructure.Repositories;
 using NPS.Infrastructure.UnitOfWork;
@@ -23,6 +25,8 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddScoped(typeof(INpsRepository), typeof(NpsRepository));
 builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+builder.Services.AddScoped(typeof(INpsQuery), typeof(NpsQuery));
+builder.Services.AddScoped(typeof(INpsQueryService), typeof(NpsQueryService));
 
 var app = builder.Build();
 
