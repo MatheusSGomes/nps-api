@@ -1,3 +1,4 @@
 namespace NPS.Application.NpsCQ.ViewModels;
 
-public record NpsScoreViewModel(int NpsScore);
+// Porcentagem Média Promotores - Porcentagem Média Detratores
+public record NpsScoreViewModel(int Score);

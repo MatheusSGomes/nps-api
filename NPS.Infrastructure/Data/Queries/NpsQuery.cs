@@ -19,7 +19,19 @@ public class NpsQuery : INpsQuery
 
         await using (var connection = new SqlConnection(connectionString))
         {
-            var sql = "SELECT AVG(Score) AS Media FROM [Nps];";
+            var sql = @"
+                SELECT
+                    COALESCE(
+                            (SELECT AVG(Score) FROM [Nps] WHERE Score > 8) *
+                            (SELECT COUNT(*) FROM [Nps] WHERE Score > 8) / (SELECT COUNT(*) FROM [Nps]),
+                            0
+                    ) -
+                    COALESCE(
+                            (SELECT AVG(Score) FROM [Nps] WHERE Score < 3) *
+                            (SELECT COUNT(*) FROM [Nps] WHERE Score < 3) / (SELECT COUNT(*) FROM [Nps]),
+                            0
+                    ) AS PorcentagemDiferenca;";
+
             return await connection.QueryFirstOrDefaultAsync<int>(sql);
         }
     }
