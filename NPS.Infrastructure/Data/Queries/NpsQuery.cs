@@ -21,18 +21,12 @@ public class NpsQuery : INpsQuery
         {
             var sql = @"
                 SELECT
-                    /* Porcentagem dos promotores */
-                    COALESCE(
-                            (SELECT AVG(Score) FROM [Nps] WHERE Score > 9) *
-                            (SELECT COUNT(*) FROM [Nps] WHERE Score > 9) / (SELECT COUNT(*) FROM [Nps]),
-                            0
-                    ) -
-                    /* Porcentagem dos detratores */
-                    COALESCE(
-                            (SELECT AVG(Score) FROM [Nps] WHERE Score < 6) *
-                            (SELECT COUNT(*) FROM [Nps] WHERE Score < 6) / (SELECT COUNT(*) FROM [Nps]),
-                            0
-                    ) AS PorcentagemDiferenca;";
+                    /* Porcentagem promotores */
+                    (SELECT COUNT(Score) FROM [Nps] WHERE Score >= 9) * 100.0 /
+                    (SELECT COUNT(*) FROM [Nps]) -
+                    /* Porcentagem detratores*/
+                    (SELECT COUNT(Score) FROM [Nps] WHERE Score <= 6) * 100.0 /
+                    (SELECT COUNT(*) FROM [Nps]) AS Score;";
 
             return await connection.QueryFirstOrDefaultAsync<int>(sql);
         }
