@@ -8,9 +8,7 @@ Os clientes respondem à pergunta: *"De 0 a 10, o quanto você recomendaria noss
 - **Detratores (0-6)**: Clientes insatisfeitos, que podem compartilhar experiências negativas.
 
 O cálculo do NPS é feito subtraindo a porcentagem de Detratores da porcentagem de Promotores:
-\[
-\text{NPS} = \% \text{ Promotores} - \% \text{ Detratores}
-\]
+NPS = %  Promotores - %  Detratores
 
 ### Requisitos da API para o Formulário de NPS
 
