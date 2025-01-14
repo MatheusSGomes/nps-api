@@ -42,11 +42,15 @@ public class NpsQuery : Query, INpsQuery
         await using (var connection = new SqlConnection(connectionString))
         {
             StringBuilder sql = new();
-            // var sql = @"";
 
-            sql.AppendLine("SELECT Score, CustomerName, Comment FROM [Nps];");
+            sql.AppendLine("SELECT Score, CustomerName, Comment FROM [Nps]");
 
-            return await connection.QueryAsync<NpsFullResponseViewModel>(sql.ToString());
+            if (filters.Data != null)
+                sql.AppendLine("WHERE CAST(createdAt AS DATE) = @Data;");
+
+            return await connection.QueryAsync<NpsFullResponseViewModel>(
+                sql: sql.ToString(),
+                param: new { Data = filters.Data });
         }
     }
 }
