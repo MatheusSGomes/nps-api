@@ -1,7 +1,7 @@
 using MediatR;
-using NPS.Application.NpsCQ.ViewModels;
 using NPS.Core.DTOs.Request;
 using NPS.Core.Entities;
+using NPS.Core.Nps.ViewModels;
 using NPS.Infrastructure.UnitOfWork;
 
 namespace NPS.Application.NpsCQ.Handlers;

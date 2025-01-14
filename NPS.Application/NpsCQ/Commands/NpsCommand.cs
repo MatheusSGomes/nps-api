@@ -1,5 +1,5 @@
 using MediatR;
-using NPS.Application.NpsCQ.ViewModels;
+using NPS.Core.Nps.ViewModels;
 
 namespace NPS.Core.DTOs.Request;
 
