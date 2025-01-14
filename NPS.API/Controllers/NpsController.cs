@@ -1,8 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NPS.Application.NpsCQ.Queries;
-using NPS.Application.NpsCQ.ViewModels;
 using NPS.Core.DTOs.Request;
+using NPS.Core.Nps.Filters;
+using NPS.Core.Nps.ViewModels;
 
 namespace NPS.API.Controllers;
 
@@ -30,5 +31,11 @@ public class NpsController : ControllerBase
     public async Task<ActionResult<NpsScoreViewModel>> GetNpsScore()
     {
         return Ok(await _npsQueryService.GetNpsScore());
+    }
+
+    [HttpGet("Responses")]
+    public async Task<ActionResult<List<NpsFullResponseViewModel>>> GetNpsResponses([FromQuery]NpsFilters filters)
+    {
+        return Ok(await _npsQueryService.GetNpsResponses(filters));
     }
 }
