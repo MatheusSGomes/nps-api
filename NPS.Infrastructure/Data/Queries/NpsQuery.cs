@@ -43,14 +43,25 @@ public class NpsQuery : Query, INpsQuery
         {
             StringBuilder sql = new();
 
-            sql.AppendLine("SELECT Score, CustomerName, Comment FROM [Nps]");
+            sql.AppendLine("SELECT Score, CustomerName, Comment FROM [Nps] WHERE 1=1");
 
             if (filters.Data != null)
-                sql.AppendLine("WHERE CAST(createdAt AS DATE) = @Data;");
+                sql.AppendLine("AND CAST(createdAt AS DATE) = @Data");
+
+            if (filters.CustomerName != null)
+                sql.AppendLine("AND CustomerName = @CustomerName");
+
+            if (filters.Category != null)
+                sql.AppendLine("AND Category = @Category");
 
             return await connection.QueryAsync<NpsFullResponseViewModel>(
                 sql: sql.ToString(),
-                param: new { Data = filters.Data });
+                param: new
+                {
+                    Data = filters.Data,
+                    CustomerName = filters.CustomerName,
+                    Category = filters.Category
+                });
         }
     }
 }
