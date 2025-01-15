@@ -7,4 +7,5 @@ public interface INpsQueryService
 {
     Task<NpsScoreViewModel> GetNpsScore();
     Task<IEnumerable<NpsFullResponseViewModel>> GetNpsResponses(NpsFilters filters);
+    Task<NpsSummaryViewModel> GetNpsSummary();
 }

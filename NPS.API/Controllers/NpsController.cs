@@ -38,4 +38,10 @@ public class NpsController : ControllerBase
     {
         return Ok(await _npsQueryService.GetNpsResponses(filters));
     }
+
+    [HttpGet("Summary")]
+    public async Task<ActionResult<NpsSummaryViewModel>> GetNpsSummary()
+    {
+        return Ok(await _npsQueryService.GetNpsSummary());
+    }
 }

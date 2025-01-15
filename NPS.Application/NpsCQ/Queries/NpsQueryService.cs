@@ -23,4 +23,9 @@ public class NpsQueryService : INpsQueryService
     {
         return await _npsQuery.GetNpsResponses(filters);
     }
+
+    public async Task<NpsSummaryViewModel> GetNpsSummary()
+    {
+        return await _npsQuery.GetNpsSummary();
+    }
 }

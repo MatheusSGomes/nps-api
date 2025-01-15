@@ -64,4 +64,30 @@ public class NpsQuery : Query, INpsQuery
                 });
         }
     }
+
+    public async Task<NpsSummaryViewModel> GetNpsSummary()
+    {
+        var connectionString = _configuration.GetConnectionString("DefaultConnection");
+
+        await using (var connection = new SqlConnection(connectionString))
+        {
+            var sql = @"SELECT 
+                            /* Promoters */
+                            CAST((SELECT COUNT(Score) FROM [Nps] WHERE Score >= 9) * 100.0 /
+                                 (SELECT COUNT(*) FROM [Nps]) AS DECIMAL(10, 2)) AS Promoters,
+                            /* Neutrals */
+                            CAST((SELECT COUNT(Score) FROM [Nps] WHERE Score > 6 AND Score < 9) * 100.0 /
+                                 (SELECT COUNT(*) FROM [Nps]) AS DECIMAL(10, 2)) AS Neutrals,
+                            /* Detractors */
+                            CAST((SELECT COUNT(Score) FROM [Nps] WHERE Score <= 6) * 100.0 /
+                                 (SELECT COUNT(*) FROM [Nps]) AS DECIMAL(10, 2)) AS Detractors,
+                            /* NpsScore */
+                            CAST((SELECT COUNT(Score) FROM [Nps] WHERE Score >= 9) * 100.0 /
+                                 (SELECT COUNT(*) FROM [Nps]) -
+                                 (SELECT COUNT(Score) FROM [Nps] WHERE Score <= 6) * 100.0 /
+                                 (SELECT COUNT(*) FROM [Nps]) AS Decimal(10, 2)) AS NpsScore;";
+
+            return await connection.QueryFirstOrDefaultAsync<NpsSummaryViewModel>(sql);
+        }
+    }
 }
