@@ -6,20 +6,26 @@ namespace NPS.Infrastructure.Data.Queries;
 
 public class Query
 {
-    private readonly IConfiguration _configuration;
+    private readonly string? _connectionString;
 
     public Query(IConfiguration configuration)
     {
-        _configuration = configuration;
+        _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
 
-    protected async Task<T> QuerySingleAsync<T>(string sql, object parameters = null)
+    protected async Task<T> QueryFirstAsync<T>(string sql, object parameters = null)
     {
-        var connectionString = _configuration.GetConnectionString("DefaultConnection");
-        
-        await using (var connection = new SqlConnection(connectionString))
+        await using (var connection = new SqlConnection(_connectionString))
         {
             return await connection.QueryFirstOrDefaultAsync<T>(sql, param: parameters);
+        }
+    }
+
+    protected async Task<IEnumerable<T>> QueryListAsync<T>(string sql, object parameters = null)
+    {
+        await using (var connection = new SqlConnection(_connectionString))
+        {
+            return await connection.QueryAsync<T>(sql, param: parameters);
         }
     }
 }
