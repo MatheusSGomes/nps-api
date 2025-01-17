@@ -40,7 +40,7 @@ public class NpsQuery : Query, INpsQuery
         if (filters.Category != null)
             sql.AppendLine("AND Category = @Category");
 
-        return await QueryListAsync<NpsFullResponseViewModel>(
+        return await QueryAsync<NpsFullResponseViewModel>(
             sql: sql.ToString(),
             parameters: new
             {

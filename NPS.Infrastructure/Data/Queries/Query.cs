@@ -15,17 +15,13 @@ public class Query
 
     protected async Task<T> QueryFirstAsync<T>(string sql, object parameters = null)
     {
-        await using (var connection = new SqlConnection(_connectionString))
-        {
-            return await connection.QueryFirstOrDefaultAsync<T>(sql, param: parameters);
-        }
+        using (var connection = new SqlConnection(_connectionString))
+        return await connection.QueryFirstOrDefaultAsync<T>(sql, param: parameters);
     }
 
-    protected async Task<IEnumerable<T>> QueryListAsync<T>(string sql, object parameters = null)
+    protected async Task<IEnumerable<T>> QueryAsync<T>(string sql, object parameters = null)
     {
-        await using (var connection = new SqlConnection(_connectionString))
-        {
-            return await connection.QueryAsync<T>(sql, param: parameters);
-        }
+        using (var connection = new SqlConnection(_connectionString))
+        return await connection.QueryAsync<T>(sql, param: parameters);
     }
 }
