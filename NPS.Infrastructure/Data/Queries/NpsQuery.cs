@@ -22,7 +22,7 @@ public class NpsQuery : Query, INpsQuery
                     (SELECT COUNT(Score) FROM [Nps] WHERE Score <= 6) * 100.0 /
                     (SELECT COUNT(*) FROM [Nps]) AS Score;";
 
-        return await QuerySingleAsync<int>(sql);
+        return await QueryFirstAsync<int>(sql);
     }
 
     public async Task<IEnumerable<NpsFullResponseViewModel>> GetNpsResponses(NpsFilters filters)
@@ -40,7 +40,7 @@ public class NpsQuery : Query, INpsQuery
         if (filters.Category != null)
             sql.AppendLine("AND Category = @Category");
 
-        return await QuerySingleAsync<List<NpsFullResponseViewModel>>(
+        return await QueryListAsync<NpsFullResponseViewModel>(
             sql: sql.ToString(),
             parameters: new
             {
@@ -68,6 +68,6 @@ public class NpsQuery : Query, INpsQuery
                                  (SELECT COUNT(Score) FROM [Nps] WHERE Score <= 6) * 100.0 /
                                  (SELECT COUNT(*) FROM [Nps]) AS Decimal(10, 2)) AS NpsScore;";
 
-        return await QuerySingleAsync<NpsSummaryViewModel>(sql);
+        return await QueryFirstAsync<NpsSummaryViewModel>(sql);
     }
 }
