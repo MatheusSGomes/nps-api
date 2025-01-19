@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NPS.API.Extensions;
 using NPS.Application.NpsCQ.Handlers;
 using NPS.Application.NpsCQ.Queries;
 using NPS.Core.Interfaces.Repositorios;
@@ -9,11 +10,7 @@ using NPS.Infrastructure.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.AddServices();
 
 var configuration = builder.Configuration;
 
