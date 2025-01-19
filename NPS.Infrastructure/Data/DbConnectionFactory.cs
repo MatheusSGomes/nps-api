@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 
 namespace NPS.Infrastructure.Data;
 
-public class DbConnectionFactory : IDbConnectionFactory
+public class DbConnectionFactory
 {
     private readonly string _connectionString;
 
