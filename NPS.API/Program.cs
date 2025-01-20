@@ -1,5 +1,5 @@
 using NPS.API.Extensions;
-using NPS.Infrastructure.UnitOfWork;
+using NPS.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,20 +17,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.Use(async (context, next) =>
-{
-    // Após invocar toda a aplicação
-    await next.Invoke();
-
-    // Recupero o UnitOfWork para aplicar o commit (SaveChanges)
-    var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));
-    await unitOfWork.Commit();
-});
+app.UseMiddleware<UnitOfWorkMiddleware>();
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
