@@ -1,10 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using NPS.API.Extensions;
-using NPS.Application.NpsCQ.Handlers;
 using NPS.Application.NpsCQ.Queries;
 using NPS.Core.Interfaces.Repositorios;
 using NPS.Infrastructure.Data.Queries;
-using NPS.Infrastructure.Persistence;
 using NPS.Infrastructure.Repositories;
 using NPS.Infrastructure.UnitOfWork;
 
@@ -12,9 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServices();
 builder.AddSqlServer();
-
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(NpsCommandHandler).Assembly));
+builder.AddMediatR();
 
 builder.Services.AddScoped(typeof(INpsRepository), typeof(NpsRepository));
 builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));

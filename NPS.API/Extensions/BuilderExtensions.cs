@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NPS.Application.NpsCQ.Handlers;
 using NPS.Infrastructure.Persistence;
 
 namespace NPS.API.Extensions;
@@ -18,6 +19,12 @@ public static class BuilderExtensions
 
         builder.Services.AddDbContext<NpsDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+    }
+
+    public static void AddMediatR(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddMediatR(cfg =>
+            cfg.RegisterServicesFromAssembly(typeof(NpsCommandHandler).Assembly));
     }
 
     public static void AddJwtAuth(this WebApplicationBuilder builder)
