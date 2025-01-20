@@ -11,11 +11,7 @@ using NPS.Infrastructure.UnitOfWork;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServices();
-
-var configuration = builder.Configuration;
-
-builder.Services.AddDbContext<NpsDbContext>(options =>
-    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+builder.AddSqlServer();
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(NpsCommandHandler).Assembly));
