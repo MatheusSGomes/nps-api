@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NPS.Application.NpsCQ.Queries;
 using NPS.Core.DTOs.Request;
@@ -28,18 +29,21 @@ public class NpsController : ControllerBase
     }
 
     [HttpGet("Score")]
+    [Authorize]
     public async Task<ActionResult<NpsScoreViewModel>> GetNpsScore()
     {
         return Ok(await _npsQueryService.GetNpsScore());
     }
 
     [HttpGet("Responses")]
+    [Authorize]
     public async Task<ActionResult<List<NpsFullResponseViewModel>>> GetNpsResponses([FromQuery]NpsFilters filters)
     {
         return Ok(await _npsQueryService.GetNpsResponses(filters));
     }
 
     [HttpGet("Summary")]
+    [Authorize]
     public async Task<ActionResult<NpsSummaryViewModel>> GetNpsSummary()
     {
         return Ok(await _npsQueryService.GetNpsSummary());
