@@ -31,11 +31,13 @@ public class AuthenticationService : IAuthenticationService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+        double.TryParse(_configuration["Authentication:Expires"], out var expiresAt);
+
         var token = new JwtSecurityToken(
-            issuer: "nps.com.br",
-            audience: "nps.com.br",
+            issuer: _configuration["Authentication:Issuer"],
+            audience: _configuration["Authentication:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.Now.AddMinutes(expiresAt),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
