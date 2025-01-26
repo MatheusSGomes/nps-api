@@ -1,4 +1,7 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NPS.Application.NpsCQ.Handlers;
 using NPS.Application.NpsCQ.Queries;
 using NPS.Core.Interfaces.Repositorios;
@@ -41,5 +44,23 @@ public static class BuilderExtensions
     }
 
     public static void AddJwtAuth(this WebApplicationBuilder builder)
-    {}
+    {
+        var configuration = builder.Configuration;
+
+        builder.Services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = "nps.com.br",
+                    ValidAudience = "nps.com.br",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("Authentication:SecretKey")!))
+                };
+            });
+    }
 }
