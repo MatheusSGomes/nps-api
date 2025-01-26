@@ -11,6 +11,13 @@ namespace NPS.API.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
+    private readonly IConfiguration _configuration;
+
+    public AuthController(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     [HttpPost("login")]
     public IActionResult Login([FromBody] UserLogin user)
     {
@@ -26,13 +33,17 @@ public class AuthController : ControllerBase
 
     private string GenerateJwtToken(string username)
     {
+        var secret = _configuration.GetValue<string>("Authentication:SecretKey");
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("my_super_secret_key"));
+        if (secret is null)
+            throw new ArgumentNullException("Chave de autenticação inválida ou vazia");
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
