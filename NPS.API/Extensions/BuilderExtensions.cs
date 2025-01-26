@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NPS.Application.NpsCQ.Handlers;
 using NPS.Application.NpsCQ.Queries;
+using NPS.Application.Services;
 using NPS.Core.Interfaces.Repositorios;
 using NPS.Infrastructure.Data.Queries;
 using NPS.Infrastructure.Persistence;
@@ -27,6 +28,7 @@ public static class BuilderExtensions
         builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
         builder.Services.AddScoped(typeof(INpsQuery), typeof(NpsQuery));
         builder.Services.AddScoped(typeof(INpsQueryService), typeof(NpsQueryService));
+        builder.Services.AddScoped(typeof(IAuthenticationService), typeof(AuthenticationService));
     }
 
     public static void AddSqlServer(this WebApplicationBuilder builder)

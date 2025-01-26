@@ -1,9 +1,5 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
+using NPS.Application.Services;
 
 namespace NPS.API.Controllers;
 
@@ -11,11 +7,11 @@ namespace NPS.API.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
+    private readonly IAuthenticationService _authenticationService;
 
-    public AuthController(IConfiguration configuration)
+    public AuthController(IAuthenticationService authenticationService)
     {
-        _configuration = configuration;
+        _authenticationService = authenticationService;
     }
 
     [HttpPost("login")]
@@ -24,36 +20,11 @@ public class AuthController : ControllerBase
         // TODO: Validação de senha
         if (user.Username == "admin" && user.Password == "password")
         {
-            var token = GenerateJwtToken(user.Username);
+            var token = _authenticationService.GenerateJwtToken(user.Username);
             return Ok(new { token });
         }
 
         return Unauthorized();
-    }
-
-    private string GenerateJwtToken(string username)
-    {
-        var secret = _configuration.GetValue<string>("Authentication:SecretKey");
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
-
-        if (secret is null)
-            throw new ArgumentNullException("Chave de autenticação inválida ou vazia");
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: "nps.com.br",
-            audience: "nps.com.br",
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
-            signingCredentials: creds);
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
 
