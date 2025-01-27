@@ -8,19 +8,28 @@ namespace NPS.API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthenticationService _authenticationService;
+    private readonly IConfiguration _configuration;
 
-    public AuthController(IAuthenticationService authenticationService)
+    public AuthController(IAuthenticationService authenticationService, IConfiguration configuration)
     {
         _authenticationService = authenticationService;
+        _configuration = configuration;
     }
 
     [HttpPost("login")]
     public IActionResult Login([FromBody] UserLogin user)
     {
-        // TODO: Validação de senha
         if (user.Username == "admin" && user.Password == "password")
         {
-            var token = _authenticationService.GenerateJwtToken(user.Username);
+            var configs = new Dictionary<string, string>()
+            {
+                { "Secret", _configuration["Authentication:SecretKey"]! },
+                { "Expires", _configuration["Authentication:Expires"]! },
+                { "Issuer", _configuration["Authentication:Issuer"]! },
+                { "Audience", _configuration["Authentication:Audience"]! }
+            };
+
+            var token = _authenticationService.GenerateJwtToken(user.Username, configs);
             return Ok(new { token });
         }
 
