@@ -8,9 +8,9 @@ namespace NPS.Application.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
-    public string GenerateJwtToken(string username, Dictionary<string, string> configs)
+    public string GenerateJwtToken(string username, Dictionary<string, string> settings)
     {
-        var secret = configs["Secret"];
+        var secret = settings["Secret"];
 
         if (secret is null)
             throw new ArgumentNullException("Chave de autenticação inválida ou vazia");
@@ -24,11 +24,11 @@ public class AuthenticationService : IAuthenticationService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        double.TryParse(configs["Expires"], out var expiresAt);
+        double.TryParse(settings["Expires"], out var expiresAt);
 
         var token = new JwtSecurityToken(
-            issuer: configs["Issuer"],
-            audience: configs["Audience"],
+            issuer: settings["Issuer"],
+            audience: settings["Audience"],
             claims: claims,
             expires: DateTime.Now.AddMinutes(expiresAt),
             signingCredentials: creds);

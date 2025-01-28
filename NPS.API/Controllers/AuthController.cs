@@ -21,7 +21,7 @@ public class AuthController : ControllerBase
     {
         if (user.Username == "admin" && user.Password == "password")
         {
-            var configs = new Dictionary<string, string>()
+            var settings = new Dictionary<string, string>()
             {
                 { "Secret", _configuration["Authentication:SecretKey"]! },
                 { "Expires", _configuration["Authentication:Expires"]! },
@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
                 { "Audience", _configuration["Authentication:Audience"]! }
             };
 
-            var token = _authenticationService.GenerateJwtToken(user.Username, configs);
+            var token = _authenticationService.GenerateJwtToken(user.Username, settings);
             return Ok(new { token });
         }
 
