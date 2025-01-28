@@ -10,6 +10,9 @@ public class AuthenticationService : IAuthenticationService
 {
     public string GenerateJwtToken(string username, Dictionary<string, string> settings)
     {
+        if (settings.IsNullOrEmpty())
+            throw new ArgumentNullException("Settings precisa ser configurado");
+
         var secret = settings["Secret"];
 
         if (secret is null)

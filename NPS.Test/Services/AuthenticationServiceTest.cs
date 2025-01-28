@@ -4,7 +4,6 @@ namespace NPS.Test.Services;
 
 public class AuthenticationServiceTest
 {
-
     [Fact]
     public void AuthenticationService_DeveImplementarUmaInterface()
     {
@@ -13,6 +12,18 @@ public class AuthenticationServiceTest
 
         // Act & Assert
         Assert.IsAssignableFrom<IAuthenticationService>(authenticationService);
+    }
+
+    [Fact]
+    public void GenerateJwtToken_DeveLancarExcecao_QuandoSettingsDictionaryForVazio()
+    {
+        // Arrange
+        var inMemorySettings = new Dictionary<string, string>();
+        var authenticationService = new AuthenticationService();
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() =>
+            authenticationService.GenerateJwtToken("user", inMemorySettings));
     }
 
     [Fact]
