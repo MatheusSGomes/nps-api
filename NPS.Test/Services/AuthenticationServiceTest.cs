@@ -22,8 +22,9 @@ public class AuthenticationServiceTest
         var authenticationService = new AuthenticationService();
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        var exception = Assert.Throws<ArgumentNullException>(() =>
             authenticationService.GenerateJwtToken("user", inMemorySettings));
+        Assert.Equal("Settings precisa ser configurado", exception.ParamName);
     }
 
     [Fact]
@@ -41,7 +42,8 @@ public class AuthenticationServiceTest
         var authenticationService = new AuthenticationService();
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        var exception = Assert.Throws<ArgumentNullException>(() =>
             authenticationService.GenerateJwtToken("user", inMemorySettings));
+        Assert.Equal("Chave de autenticação inválida ou vazia", exception.ParamName);
     }
 }
