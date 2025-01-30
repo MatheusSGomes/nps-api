@@ -33,7 +33,7 @@ public class AuthenticationService : IAuthenticationService
         var key = new SymmetricSecurityKey(encodedSecret);
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        double.TryParse(settings["Expires"], out var expiresAt);
+        double.TryParse(settings["Expires"], out double expiresAt);
 
         var token = new JwtSecurityToken(
             issuer: settings["Issuer"],
