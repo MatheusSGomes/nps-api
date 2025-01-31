@@ -151,6 +151,29 @@ public class AuthenticationServiceTest
     }
 
     // Cenário: Valida se o "aud" (audience) é o mesmo após gerado o token
+    [Fact]
+    public void GenerateJwtToken_DeveRetornarOMesmoAudience_QuandoOTokenForGerado()
+    {
+        // Arrange
+        var username = "fakeUsername";
+        var authenticationService = new AuthenticationService();
+        var inMemorySettings = new Dictionary<string, string>()
+        {
+            { "Secret", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
+            { "Expires", "30" },
+            { "Issuer", "Authentication:Issuer" },
+            { "Audience", "Authentication:Audience" }
+        };
+
+        // Act
+        var generateJwtToken = authenticationService.GenerateJwtToken(username, inMemorySettings);
+        var jwtHandler = new JwtSecurityTokenHandler();
+        var jwtToken = jwtHandler.ReadJwtToken(generateJwtToken);
+        var audience = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Aud).Value;
+
+        // Assert
+        Assert.Equal(inMemorySettings["Audience"], audience);
+    }
 
     [Fact]
     public void GenerateJwtToken_DeveIncluirClaimJtiUnico_QuandoTokenForGerado()
