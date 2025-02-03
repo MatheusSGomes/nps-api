@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.Core", "NPS.Core\NPS.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.Test.Unit", "NPS.Test.Unit\NPS.Test.Unit.csproj", "{B6C983B3-1117-4C0D-88C7-91ACC97C2252}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPS.Test.Acceptance", "NPS.Test.Acceptance\NPS.Test.Acceptance.csproj", "{27A46084-A651-4CA1-92AC-047CE10A04F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{B6C983B3-1117-4C0D-88C7-91ACC97C2252}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6C983B3-1117-4C0D-88C7-91ACC97C2252}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6C983B3-1117-4C0D-88C7-91ACC97C2252}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27A46084-A651-4CA1-92AC-047CE10A04F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27A46084-A651-4CA1-92AC-047CE10A04F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27A46084-A651-4CA1-92AC-047CE10A04F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27A46084-A651-4CA1-92AC-047CE10A04F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
