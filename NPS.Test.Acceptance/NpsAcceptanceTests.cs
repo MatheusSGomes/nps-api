@@ -29,6 +29,28 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
+    public async Task Post_AuthLogin_DeveRetornarUnauthorizedCasoUsernameEstejaIncorreto()
+    {
+        // Arrange
+        string uri = "/api/Auth/login";
+        string mediaType = "application/json";
+        string usernameInexistente = "USERNAME_INEXISTENTE";
+        var serializeObject = JsonConvert.SerializeObject(new { username = usernameInexistente, password = "password" });
+
+        var content = new StringContent(serializeObject, Encoding.UTF8, mediaType);
+
+        // Act
+        var response = await _client.PostAsync(uri, content);
+
+        // Assert
+        Assert.False(response.IsSuccessStatusCode);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        Assert.Contains("Unauthorized", responseBody);
+        Assert.Contains("401", responseBody);
+    }
+
+    [Fact]
     public async Task Post_AuthLogin_DeveRetornarTokenSeCredenciaisEstejamCorretas()
     {
         // Arrange
