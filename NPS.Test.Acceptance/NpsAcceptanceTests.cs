@@ -1,4 +1,6 @@
+using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Newtonsoft.Json;
 
 namespace NPS.Test.Acceptance;
 
@@ -16,7 +18,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     [Theory]
     [InlineData("/swagger")]
     [InlineData("/swagger/index.html")]
-    public async Task Get_SwaggerIndex_ShouldReturnSuccessAndCorrectContentType(string url)
+    public async Task Get_SwaggerIndex_DeveRetornarSucessoComContentTypeCorreto(string url)
     {
         // Arrange & Act
         var response = await _client.GetAsync(url);
@@ -24,6 +26,25 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Assert
         response.EnsureSuccessStatusCode();
         Assert.Equal("text/html; charset=utf-8", response.Content.Headers.ContentType.ToString());
+    }
+
+    [Fact]
+    public async Task Post_AuthLogin_DeveRetornarTokenSeCredenciaisEstejamCorretas()
+    {
+        // Arrange
+        string uri = "/api/Auth/login";
+        string mediaType = "application/json";
+        var serializeObject = JsonConvert.SerializeObject(new { username = "admin", password = "password" });
+
+        var content = new StringContent(serializeObject, Encoding.UTF8, mediaType);
+
+        // Act
+        var response = await _client.PostAsync(uri, content);
+
+        // Assert
+        response.EnsureSuccessStatusCode(); // Verifica se a resposta foi 2xx
+        var responseBody = await response.Content.ReadAsStringAsync();
+        Assert.Contains("token", responseBody);
     }
 
     // [Fact]
