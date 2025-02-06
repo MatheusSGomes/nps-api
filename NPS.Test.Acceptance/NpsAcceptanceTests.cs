@@ -120,6 +120,28 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Contains(expectedContent, responseBody);
     }
 
+    [Theory]
+    [InlineData(11)]
+    [InlineData(20)]
+    [InlineData(30)]
+    public async Task Post_NpsResponses_DeveRetornarUmErro_QuandoScoreForMaiorQue10(int expectedScore)
+    {
+        // Arrange
+        string uri = "/v1/Nps/Responses";
+        string mediaType = "application/json";
+        var serializedObject = JsonConvert.SerializeObject(
+            new { score = expectedScore, customerName = "Gerado pelo Teste de Aceitação", comment = "Gerado pelo Teste de Aceitação" });
+        var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
+
+        // Act
+        var response = await _client.PostAsync(uri, content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        // Assert
+        string expectedContent = "Invalid Score";
+        Assert.Contains(expectedContent, responseBody);
+    }
+
     // [Fact]
     // public async Task SubmitNps_ReturnsSuccess()
     // {
