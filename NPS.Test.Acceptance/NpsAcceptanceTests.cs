@@ -18,10 +18,10 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     [Theory]
     [InlineData("/swagger")]
     [InlineData("/swagger/index.html")]
-    public async Task Get_SwaggerIndex_DeveRetornarSucesso_QuandoContentTypeEstiverCorreto(string url)
+    public async Task Get_SwaggerIndex_DeveRetornarSucesso_QuandoContentTypeEstiverCorreto(string uri)
     {
         // Arrange & Act
-        var response = await _client.GetAsync(url);
+        var response = await _client.GetAsync(uri);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -89,6 +89,34 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         response.EnsureSuccessStatusCode(); // Verifica se a resposta foi 2xx
         var responseBody = await response.Content.ReadAsStringAsync();
         Assert.Contains("token", responseBody);
+    }
+
+    // Cenários:
+    // Cenário 1: Passar Score menor que 0 (número negativo) -> Erro
+    // Cenário 2: Passar Score maior que 10 -> Erro
+    // Cenário 3: Não passar CustomerName -> Erro
+    // Cenário 4: Todos os parâmetros corretos -> Sucesso
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(-10)]
+    [InlineData(-100)]
+    public async Task Post_NpsResponses_DeveRetornarErro_QuandoScoreForMenorOuIgualZero(int expectedScore)
+    {
+        // Arrange
+        string uri = "/v1/Nps/Responses";
+        string mediaType = "application/json";
+        var serializedObject = JsonConvert.SerializeObject(new { score = 0, customerName = "x", comment = "x" });
+        var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
+
+        // Act
+        var response = await _client.PostAsync(uri, content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        // Assert
+        string expectedContent = "Invalid Score";
+        Assert.Contains(expectedContent, responseBody);
     }
 
     // [Fact]
