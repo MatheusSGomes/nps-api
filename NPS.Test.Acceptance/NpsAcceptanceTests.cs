@@ -107,7 +107,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "/v1/Nps/Responses";
         string mediaType = "application/json";
-        var serializedObject = JsonConvert.SerializeObject(new { score = 0, customerName = "x", comment = "x" });
+        var serializedObject = JsonConvert.SerializeObject(
+            new { score = expectedScore, customerName = "Gerado pelo Teste de Aceitação", comment = "Gerado pelo Teste de Aceitação" });
         var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
 
         // Act
