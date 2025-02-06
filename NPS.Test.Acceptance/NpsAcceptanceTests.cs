@@ -18,7 +18,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     [Theory]
     [InlineData("/swagger")]
     [InlineData("/swagger/index.html")]
-    public async Task Get_SwaggerIndex_DeveRetornarSucessoComContentTypeCorreto(string url)
+    public async Task Get_SwaggerIndex_DeveRetornarSucesso_QuandoContentTypeEstiverCorreto(string url)
     {
         // Arrange & Act
         var response = await _client.GetAsync(url);
@@ -29,7 +29,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Post_AuthLogin_DeveRetornarUnauthorizedCasoUsernameEstejaIncorreto()
+    public async Task Post_AuthLogin_DeveRetornarUnauthorized_CasoUsernameEstejaIncorreto()
     {
         // Arrange
         string uri = "/api/Auth/login";
@@ -51,7 +51,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Post_AuthLogin_DeveRetornarUnauthorizedCasoPasswordEstejaIncorreto()
+    public async Task Post_AuthLogin_DeveRetornarUnauthorized_CasoPasswordEstejaIncorreto()
     {
         // Arrange
         string uri = "/api/Auth/login";
@@ -73,7 +73,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Post_AuthLogin_DeveRetornarTokenSeCredenciaisEstejamCorretas()
+    public async Task Post_AuthLogin_DeveRetornarToken_QuandoCredenciaisEstejamCorretas()
     {
         // Arrange
         string uri = "/api/Auth/login";
