@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
+using NPS.Core.Nps.ViewModels;
 
 namespace NPS.Test.Acceptance;
 
@@ -91,12 +92,6 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Contains("token", responseBody);
     }
 
-    // Cenários:
-    // Cenário 1: Passar Score menor que 0 (número negativo) -> Erro
-    // Cenário 2: Passar Score maior que 10 -> Erro
-    // Cenário 3: Não passar CustomerName -> Erro
-    // Cenário 4: Todos os parâmetros corretos -> Sucesso
-
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
@@ -160,6 +155,27 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Assert
         string expectedContent = "Customer name is null or empty";
         Assert.Contains(expectedContent, responseBody);
+    }
+
+    [Fact]
+    public async Task Post_NpsResponses_DeveRetornarSucesso_QuandoTodosOsDadosEstiveremOk()
+    {
+        // Arrange
+        string uri = "/v1/Nps/Responses";
+        string mediaType = "application/json";
+        var objToSerialize = new { score = 5, customerName = "Customer Name", comment = "Gerado pelo Teste de Aceitação" };
+
+        var serializedObject = JsonConvert.SerializeObject(objToSerialize);
+        var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
+
+        // Act
+        HttpResponseMessage response = await _client.PostAsync(uri, content);
+        string responseBody = await response.Content.ReadAsStringAsync();
+        var npsResponse = JsonConvert.DeserializeObject<NpsResponseViewModel>(responseBody);
+
+        // Assert
+        Assert.Equal(objToSerialize.score, npsResponse.Score);
+        Assert.Equal(objToSerialize.customerName, npsResponse.CustomerName);
     }
 
     // [Fact]
