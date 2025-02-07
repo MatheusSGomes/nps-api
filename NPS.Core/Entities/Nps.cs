@@ -24,8 +24,13 @@ public class Nps : BaseEntity
         Category = Classify();
     }
 
-    public static Nps CreateResponse(int score, string customerName, string comment) =>
-        new(score, customerName, comment);
+    public static Nps CreateResponse(int score, string customerName, string comment)
+    {
+        if (string.IsNullOrEmpty(customerName))
+            throw new Exception(NpsErrorMessage.CustomerNameIsNullOrEmpty);
+            
+        return new(score, customerName, comment);
+    }
 
     private Category Classify()
     {

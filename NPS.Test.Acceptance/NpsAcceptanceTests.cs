@@ -142,6 +142,26 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Contains(expectedContent, responseBody);
     }
 
+    [Fact]
+    public async Task Post_NpsResponses_DeveRetornarUmErro_QuandoCustomerNameForVazio()
+    {
+        // Arrange
+        string uri = "/v1/Nps/Responses";
+        string mediaType = "application/json";
+        string emptyExpectedUsername = "";
+        var serializedObject = JsonConvert.SerializeObject(
+            new { score = 5, customerName = emptyExpectedUsername, comment = "Gerado pelo Teste de Aceitação" });
+        var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
+
+        // Act
+        var response = await _client.PostAsync(uri, content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        // Assert
+        string expectedContent = "Customer name is null or empty";
+        Assert.Contains(expectedContent, responseBody);
+    }
+
     // [Fact]
     // public async Task SubmitNps_ReturnsSuccess()
     // {
