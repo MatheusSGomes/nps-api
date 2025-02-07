@@ -178,18 +178,34 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(objToSerialize.customerName, npsResponse.CustomerName);
     }
 
-    // [Fact]
-    // public async Task SubmitNps_ReturnsSuccess()
+    // TODAS PENDENTES DE TESTE:
+    // GET - /v1/Nps/Responses
+    // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
+    // Cenário 1: Ao preencher o parâmetro "Data" errado, é retornado o resultado algum erro
+    // Cenário 2: Ao preencher o parâmetro "Data" corretamente, é retornado o resultado correto
+    // Cenário 3: Ao preencher o parâmetro "CustomerName" errado, é retornado o resultado algum erro
+    // Cenário 4: Ao preencher o parâmetro "CustomerName" corretamente, é retornado o resultado correto
+    // Cenário 5: Ao preencher o parâmetro "Category" errado, é retornado o resultado algum erro
+    // Cenário 6: Ao preencher o parâmetro "Category" corretamente, é retornado o resultado correto
+    // Cenário 7: Ao preencher todos os parâmetros Data e CustomerName, é retornado sucesso
+    // Cenário 8: Ao preencher todos os parâmetros Data e Category, é retornado sucesso
+    // Cenário 9: Ao preencher todos os parâmetros Category e CustomerName, é retornado sucesso
+    // Cenário 10: Ao preencher todos os parâmetros corretamente, é retornado sucesso
+
+    // GET - /v1/Nps/Score
+    // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
+    // Cenário 1: Valida se o objeto retornado contém a chave "score".
     // {
-    //     // Arrange
-    //     var content = new StringContent(JsonConvert.SerializeObject(new { UserId = 1, Score = 9 }), Encoding.UTF8, "application/json");
-    //
-    //     // Act
-    //     var response = await _client.PostAsync("/api/nps/submit", content); // Supondo que existe um endpoint POST em "/api/nps/submit"
-    //
-    //     // Assert
-    //     response.EnsureSuccessStatusCode(); // Verifica se a resposta foi 2xx
-    //     var responseBody = await response.Content.ReadAsStringAsync();
-    //     Assert.Contains("Success", responseBody); // Verifica se a resposta contém "Success" (exemplo de resposta)
+    //   "score": 0
+    // }
+
+    // GET - /v1/Nps/Summary
+    // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
+    // Cenário 1: Valida se o objeto retornado contém as chaves "promoters", "neutrals", "detractors" e "npsScore".
+    // {
+    //   "promoters": 0,
+    //   "neutrals": 0,
+    //   "detractors": 0,
+    //   "npsScore": 0
     // }
 }
