@@ -47,9 +47,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Assert
         Assert.False(response.IsSuccessStatusCode);
 
-        var responseBody = await response.Content.ReadAsStringAsync();
-        Assert.Contains("Unauthorized", responseBody);
-        Assert.Contains("401", responseBody);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -69,9 +67,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Assert
         Assert.False(response.IsSuccessStatusCode);
 
-        var responseBody = await response.Content.ReadAsStringAsync();
-        Assert.Contains("Unauthorized", responseBody);
-        Assert.Contains("401", responseBody);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -194,17 +190,18 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
 
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
-    // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
-    // Cenário 1: Ao preencher o parâmetro "Data" errado, é retornado o resultado algum erro
-    // Cenário 2: Ao preencher o parâmetro "Data" corretamente, é retornado o resultado correto
-    // Cenário 3: Ao preencher o parâmetro "CustomerName" errado, é retornado o resultado algum erro
-    // Cenário 4: Ao preencher o parâmetro "CustomerName" corretamente, é retornado o resultado correto
-    // Cenário 5: Ao preencher o parâmetro "Category" errado, é retornado o resultado algum erro
-    // Cenário 6: Ao preencher o parâmetro "Category" corretamente, é retornado o resultado correto
-    // Cenário 7: Ao preencher todos os parâmetros Data e CustomerName, é retornado sucesso
-    // Cenário 8: Ao preencher todos os parâmetros Data e Category, é retornado sucesso
-    // Cenário 9: Ao preencher todos os parâmetros Category e CustomerName, é retornado sucesso
-    // Cenário 10: Ao preencher todos os parâmetros corretamente, é retornado sucesso
+    // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized
+    // Cenário 2: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
+    // Cenário 3: Ao preencher o parâmetro "Data" errado, é retornado o resultado algum erro
+    // Cenário 4: Ao preencher o parâmetro "Data" corretamente, é retornado o resultado correto
+    // Cenário 5: Ao preencher o parâmetro "CustomerName" errado, é retornado o resultado algum erro
+    // Cenário 6: Ao preencher o parâmetro "CustomerName" corretamente, é retornado o resultado correto
+    // Cenário 7: Ao preencher o parâmetro "Category" errado, é retornado o resultado algum erro
+    // Cenário 8: Ao preencher o parâmetro "Category" corretamente, é retornado o resultado correto
+    // Cenário 9: Ao preencher todos os parâmetros Data e CustomerName, é retornado sucesso
+    // Cenário 10: Ao preencher todos os parâmetros Data e Category, é retornado sucesso
+    // Cenário 11: Ao preencher todos os parâmetros Category e CustomerName, é retornado sucesso
+    // Cenário 12: Ao preencher todos os parâmetros corretamente, é retornado sucesso
 
     // GET - /v1/Nps/Score
     // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
