@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
+using NPS.Application.Services;
 using NPS.Core.Nps.ViewModels;
 
 namespace NPS.Test.Acceptance;
@@ -188,9 +189,33 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
+    [Fact]
+    public async Task Get_NpsResponses_DeveRetornarUnauthorized_QuandoTokenEnviadoForInvalido()
+    {
+        // Arrange
+        string uri = "/v1/Nps/Responses";
+        var tokenSettings = new Dictionary<string, string>()
+        {
+            { "Secret", Guid.NewGuid().ToString() },
+            { "Expires", "ALEATÓRIO" },
+            { "Issuer", "ALEATÓRIO" },
+            { "Audience", "ALEATÓRIO" }
+        };
+
+        var authService = new AuthenticationService();
+        var randomToken = authService.GenerateJwtToken("USERNAME_ALEATÓRIO", tokenSettings);
+
+        // Act
+        _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + randomToken);
+        var response = await _client.GetAsync(uri);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
-    // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized
+    // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized - OK
     // Cenário 2: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
     // Cenário 3: Ao preencher o parâmetro "Data" errado, é retornado o resultado algum erro
     // Cenário 4: Ao preencher o parâmetro "Data" corretamente, é retornado o resultado correto
