@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
@@ -176,6 +177,19 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Assert
         Assert.Equal(objToSerialize.score, npsResponse.Score);
         Assert.Equal(objToSerialize.customerName, npsResponse.CustomerName);
+    }
+
+    [Fact]
+    public async Task Get_NpsResponses_DeveRetornarUnauthorized_QuandoNenhumTokenForEnviado()
+    {
+        // Arrange
+        var uri = "/v1/Nps/Responses";
+
+        // Act
+        var response = await _client.GetAsync(uri);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     // TODAS PENDENTES DE TESTE:
