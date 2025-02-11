@@ -21,15 +21,14 @@ public class AuthController : ControllerBase
     {
         if (user.Username == "admin" && user.Password == "password")
         {
-            var settings = new Dictionary<string, string>()
-            {
-                { "Secret", _configuration["Authentication:SecretKey"]! },
-                { "Expires", _configuration["Authentication:Expires"]! },
-                { "Issuer", _configuration["Authentication:Issuer"]! },
-                { "Audience", _configuration["Authentication:Audience"]! }
-            };
+            var token = new JwtTokenBuilder()
+                .AddUsername(user.Username)
+                .AddSecret(_configuration["Authentication:SecretKey"])
+                .AddIssuer(_configuration["Authentication:Issuer"])
+                .AddAudience(_configuration["Authentication:Audience"])
+                .AddExpires(double.Parse(_configuration["Authentication:Expires"]))
+                .Build();
 
-            var token = _authenticationService.GenerateJwtToken(user.Username, settings);
             return Ok(new { token });
         }
 
