@@ -21,13 +21,9 @@ public class AuthController : ControllerBase
     {
         if (user.Username == "admin" && user.Password == "password")
         {
-            var token = new JwtTokenBuilder()
-                .AddUsername(user.Username)
-                .AddSecret(_configuration["Authentication:SecretKey"])
-                .AddIssuer(_configuration["Authentication:Issuer"])
-                .AddAudience(_configuration["Authentication:Audience"])
-                .AddExpires(double.Parse(_configuration["Authentication:Expires"]))
-                .Build();
+            var token = _authenticationService
+                .SetUsername(user.Username)
+                .GenerateToken(_configuration);
 
             return Ok(new { token });
         }
