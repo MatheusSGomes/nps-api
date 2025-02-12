@@ -43,9 +43,8 @@ public class JwtTokenBuilder
         return this;
     }
 
-    public string Build()
+    public void Validations()
     {
-        // Validações se tenho todos os atributos necessários
         if (_secret is null)
             throw new ArgumentNullException("Chave secreta inválida ou vazia");
 
@@ -54,6 +53,11 @@ public class JwtTokenBuilder
 
         if (_expires < 0)
             throw new ArgumentNullException("Tempo de expiração não pode ser negativo");
+    }
+
+    public string Build()
+    {
+        Validations();
 
         byte[] encodedSecret = Encoding.UTF8.GetBytes(_secret);
 
