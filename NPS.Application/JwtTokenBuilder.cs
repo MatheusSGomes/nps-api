@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace NPS.Application.Services;
+namespace NPS.Application;
 
 public class JwtTokenBuilder
 {
