@@ -277,7 +277,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Get_NpsResponses_DeveRetornarResultados_QuandoQueryParamDataForValida()
+    public async Task Get_NpsResponses_DeveRetornarSucesso_QuandoQueryParamDataForValida()
     {
         // Arrange
         string uri = "v1/Nps/Responses";
@@ -323,7 +323,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Get_NpsResponses_DeveRetornarResultados_QuandoQueryParamCustomerNameForValido()
+    public async Task Get_NpsResponses_DeveRetornarSucesso_QuandoQueryParamCustomerNameForValido()
     {
         // Arrange
         string uri = "v1/Nps/Responses";
@@ -417,7 +417,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Get_NpsResponses_DeveRetornarResultados_QuandoQueryParamCategoryForValido()
+    public async Task Get_NpsResponses_DeveRetornarSucesso_QuandoQueryParamCategoryForValido()
     {
         // Arrange
         string uri = "v1/Nps/Responses";
@@ -462,6 +462,58 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.DoesNotContain(responseSerialized, "error");
         Assert.True(responseClient.IsSuccessStatusCode);
     }
+
+    [Fact]
+    public async Task Get_NpsResponses_DeveRetornarSucesso_QuandoTodosQueryParamsForemValido()
+    {
+        // Arrange
+        string uri = "v1/Nps/Responses";
+        string mediaType = "application/json";
+
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
+            { "Authentication:Issuer", "nps.com.br" },
+            { "Authentication:Audience", "nps.com.br" },
+            { "Authentication:Expires", "30" },
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var tokenJwt = new AuthenticationService()
+            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+
+        // Act
+        // Definindo a URL base
+        UriBuilder uriBuilder = new UriBuilder(_client.BaseAddress)
+        {
+            Path = "/v1/Nps/Responses"
+        };
+
+        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        string categoryParamValido = _faker.Random.Int(0, 100).ToString();
+        string customerNameParamValido = _faker.Person.FullName;
+        string dataParamValido = _faker.Date.PastDateOnly().ToString("yyyy-MM-dd");
+
+        query["Category"] = categoryParamValido;
+        query["CustomerName"] = customerNameParamValido;
+        query["Data"] = dataParamValido;
+
+        // Atualizando a URL com os parâmetros de consulta
+        uriBuilder.Query = query.ToString();
+
+        _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
+        var responseClient = await _client.GetAsync(uriBuilder.Uri.PathAndQuery);
+
+        string responseSerialized = await responseClient.Content.ReadAsStringAsync();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, responseClient.StatusCode);
+        Assert.DoesNotContain(responseSerialized, "error");
+        Assert.True(responseClient.IsSuccessStatusCode);
+    }
     
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
@@ -471,11 +523,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     // Cenário 4: Ao preencher o parâmetro "Data" corretamente, é retornado o resultado correto - OK
     // Cenário 5: Ao preencher o parâmetro "CustomerName" corretamente, é retornado o resultado correto - OK
     // Cenário 6: Ao preencher o parâmetro "Category" errado, é retornado o resultado algum erro - OK
-    // Cenário 7: Ao preencher o parâmetro "Category" corretamente, é retornado o resultado correto
-    // Cenário 8: Ao preencher todos os parâmetros Data e CustomerName, é retornado sucesso
-    // Cenário 9: Ao preencher todos os parâmetros Data e Category, é retornado sucesso
-    // Cenário 10: Ao preencher todos os parâmetros Category e CustomerName, é retornado sucesso
-    // Cenário 11: Ao preencher todos os parâmetros corretamente, é retornado sucesso
+    // Cenário 7: Ao preencher o parâmetro "Category" corretamente, é retornado o resultado correto - OK
+    // Cenário 8: Ao preencher todos os parâmetros corretamente, é retornado sucesso - OK
 
     // GET - /v1/Nps/Score
     // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
