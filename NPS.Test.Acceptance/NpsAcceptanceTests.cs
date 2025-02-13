@@ -40,7 +40,8 @@ public partial class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Pr
         string uri = "/api/Auth/login";
         string mediaType = "application/json";
         string usernameInexistente = "USERNAME_INEXISTENTE";
-        var serializeObject = JsonConvert.SerializeObject(new { username = usernameInexistente, password = "password" });
+        var serializeObject =
+            JsonConvert.SerializeObject(new { username = usernameInexistente, password = "password" });
 
         var content = new StringContent(serializeObject, Encoding.UTF8, mediaType);
 
@@ -103,7 +104,11 @@ public partial class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Pr
         string uri = "/v1/Nps/Responses";
         string mediaType = "application/json";
         var serializedObject = JsonConvert.SerializeObject(
-            new { score = expectedScore, customerName = "Gerado pelo Teste de Aceitação", comment = "Gerado pelo Teste de Aceitação" });
+            new
+            {
+                score = expectedScore, customerName = "Gerado pelo Teste de Aceitação",
+                comment = "Gerado pelo Teste de Aceitação"
+            });
         var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
 
         // Act
@@ -125,7 +130,11 @@ public partial class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Pr
         string uri = "/v1/Nps/Responses";
         string mediaType = "application/json";
         var serializedObject = JsonConvert.SerializeObject(
-            new { score = expectedScore, customerName = "Gerado pelo Teste de Aceitação", comment = "Gerado pelo Teste de Aceitação" });
+            new
+            {
+                score = expectedScore, customerName = "Gerado pelo Teste de Aceitação",
+                comment = "Gerado pelo Teste de Aceitação"
+            });
         var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
 
         // Act
@@ -163,7 +172,8 @@ public partial class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Pr
         // Arrange
         string uri = "/v1/Nps/Responses";
         string mediaType = "application/json";
-        var objToSerialize = new { score = 5, customerName = "Customer Name", comment = "Gerado pelo Teste de Aceitação" };
+        var objToSerialize = new
+            { score = 5, customerName = "Customer Name", comment = "Gerado pelo Teste de Aceitação" };
 
         var serializedObject = JsonConvert.SerializeObject(objToSerialize);
         var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
@@ -264,43 +274,6 @@ public partial class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Pr
         Assert.True(responseDeserialized.Errors.Count >= 1);
     }
 
-    // [Fact]
-    // public async Task Post_NpsResponses_DeveRetornarUmErro_QuandoADataForInvalida()
-    // {
-    //     // Arrange
-    //     string uri = "/v1/Nps/Responses";
-    //     string mediaType = "application/json";
-    //
-    //     var inMemorySettings = new Dictionary<string, string>
-    //     {
-    //         { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
-    //         { "Authentication:Issuer", "nps.com.br" },
-    //         { "Authentication:Audience", "nps.com.br" },
-    //         { "Authentication:Expires", "30" },
-    //     };
-    //
-    //     var configuration = new ConfigurationBuilder()
-    //         .AddInMemoryCollection(inMemorySettings)
-    //         .Build();
-    //
-    //     var tokenJwt = new AuthenticationService()
-    //         .SetUsername("Username TESTE").GenerateToken(configuration);
-    //
-    //     // Act
-    //     var serializedObject = JsonConvert.SerializeObject(
-    //         new { score = 10, customerName = "Nome gerado por testes", comment = "Gerado pelo Teste de Aceitação" });
-    //
-    //     var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
-    //     var responseClient = await _client.PostAsync(uri, content);
-    //
-    //     string responseSerialized = await responseClient.Content.ReadAsStringAsync();
-    //     var responseDeserialized = JsonConvert.DeserializeObject<NpsResponseViewModel>(responseSerialized);
-    //
-    //     // Assert
-    //     Assert.True(!string.IsNullOrEmpty(tokenJwt));
-    //     Assert.Equal(HttpStatusCode.OK, responseClient.StatusCode);
-    // }
-
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
     // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized - OK
@@ -332,4 +305,10 @@ public partial class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Pr
     //   "detractors": 0,
     //   "npsScore": 0
     // }
+
+    // POST - /api/Auth/login
+    // Cenário 1 - Email e Senha errada, deve retornar um erro genérico "usuário ou senha inválido" e status - PENDENTE
+    // Cenário 2 - Email errado, deve retornar um erro genérico "usuário ou senha inválido" e status - OK
+    // Cenário 3 - Senha errada, deve retornar um erro genérico "usuário ou senha inválido" e status - OK
+    // Cenário 4 - Dados de acesso corretos - Deve retornar status de sucesso + Token - OK
 }
