@@ -9,7 +9,7 @@ using NPS.Core.Nps.ViewModels;
 
 namespace NPS.Test.Acceptance;
 
-public partial class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
+public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
     private readonly WebApplicationFactory<Program> _factory;
@@ -272,13 +272,60 @@ public partial class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Pr
         Assert.Equal(HttpStatusCode.BadRequest, responseClient.StatusCode);
         Assert.Contains("errors", responseSerialized);
         Assert.True(responseDeserialized.Errors.Count >= 1);
+        Assert.Equal(responseDeserialized.Errors["Data"][0], "The value 'VALOR_INVÁLIDO' is not valid.");
+    }
+
+    [Fact]
+    public async Task Get_NpsResponses_DeveRetornarResultados_QuandoADataForInvalida()
+    {
+        // Arrange
+        string uri = "v1/Nps/Responses";
+        string mediaType = "application/json";
+
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
+            { "Authentication:Issuer", "nps.com.br" },
+            { "Authentication:Audience", "nps.com.br" },
+            { "Authentication:Expires", "30" },
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var tokenJwt = new AuthenticationService()
+            .SetUsername("Username TESTE").GenerateToken(configuration);
+
+        // Act
+        // Definindo a URL base
+        UriBuilder uriBuilder = new UriBuilder(_client.BaseAddress)
+        {
+            Path = "/v1/Nps/Responses"
+        };
+
+        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        query["Data"] = "2025-01-01";
+
+        // Atualizando a URL com os parâmetros de consulta
+        uriBuilder.Query = query.ToString();
+
+        _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
+        var responseClient = await _client.GetAsync(uriBuilder.Uri.PathAndQuery);
+
+        string responseSerialized = await responseClient.Content.ReadAsStringAsync();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, responseClient.StatusCode);
+        Assert.DoesNotContain(responseSerialized, "error");
+        Assert.True(responseClient.IsSuccessStatusCode);
     }
 
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
     // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized - OK
     // Cenário 2: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized - OK
-    // Cenário 3: Ao preencher o parâmetro "Data" errado, é retornado o resultado algum erro
+    // Cenário 3: Ao preencher o parâmetro "Data" errado, é retornado o resultado algum erro -OK
     // Cenário 4: Ao preencher o parâmetro "Data" corretamente, é retornado o resultado correto
     // Cenário 5: Ao preencher o parâmetro "CustomerName" errado, é retornado o resultado algum erro
     // Cenário 6: Ao preencher o parâmetro "CustomerName" corretamente, é retornado o resultado correto
