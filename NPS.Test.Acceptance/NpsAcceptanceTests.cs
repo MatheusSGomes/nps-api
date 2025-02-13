@@ -1,6 +1,8 @@
 using System.Net;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using NPS.Application.Services;
 using NPS.Core.Nps.ViewModels;
@@ -213,10 +215,102 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
+    [Fact]
+    public async Task Get_NpsResponses_DeveRetornarUmErro_QuandoADataForInvalida()
+    {
+        // Arrange
+        string uri = "v1/Nps/Responses";
+        string mediaType = "application/json";
+
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
+            { "Authentication:Issuer", "nps.com.br" },
+            { "Authentication:Audience", "nps.com.br" },
+            { "Authentication:Expires", "30" },
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var tokenJwt = new AuthenticationService()
+            .SetUsername("Username TESTE").GenerateToken(configuration);
+
+        // Act
+        // Definindo a URL base
+        UriBuilder uriBuilder = new UriBuilder(_client.BaseAddress)
+        {
+            Path = "/v1/Nps/Responses"
+        };
+
+        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        query["Data"] = "VALOR_INVÁLIDO";
+        // query["CustomerName"] = "VALOR_INVÁLIDO";
+        // query["Category"] = "VALOR_INVÁLIDO";
+
+        // Atualizando a URL com os parâmetros de consulta
+        uriBuilder.Query = query.ToString();
+
+        _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
+        var responseClient = await _client.GetAsync(uriBuilder.Uri.PathAndQuery);
+
+        string responseSerialized = await responseClient.Content.ReadAsStringAsync();
+        var responseDeserialized = JsonConvert.DeserializeObject<ErrorResponse>(responseSerialized);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, responseClient.StatusCode);
+        Assert.Contains("errors", responseSerialized);
+        Assert.True(responseDeserialized.Errors.Count >= 1);
+    }
+
+    public class ErrorResponse : ProblemDetails
+    {
+        public Dictionary<string, List<string>> Errors { get; set; }
+        public string TraceId { get; set; }
+    }
+
+    // [Fact]
+    // public async Task Post_NpsResponses_DeveRetornarUmErro_QuandoADataForInvalida()
+    // {
+    //     // Arrange
+    //     string uri = "/v1/Nps/Responses";
+    //     string mediaType = "application/json";
+    //
+    //     var inMemorySettings = new Dictionary<string, string>
+    //     {
+    //         { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
+    //         { "Authentication:Issuer", "nps.com.br" },
+    //         { "Authentication:Audience", "nps.com.br" },
+    //         { "Authentication:Expires", "30" },
+    //     };
+    //
+    //     var configuration = new ConfigurationBuilder()
+    //         .AddInMemoryCollection(inMemorySettings)
+    //         .Build();
+    //
+    //     var tokenJwt = new AuthenticationService()
+    //         .SetUsername("Username TESTE").GenerateToken(configuration);
+    //
+    //     // Act
+    //     var serializedObject = JsonConvert.SerializeObject(
+    //         new { score = 10, customerName = "Nome gerado por testes", comment = "Gerado pelo Teste de Aceitação" });
+    //
+    //     var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
+    //     var responseClient = await _client.PostAsync(uri, content);
+    //
+    //     string responseSerialized = await responseClient.Content.ReadAsStringAsync();
+    //     var responseDeserialized = JsonConvert.DeserializeObject<NpsResponseViewModel>(responseSerialized);
+    //
+    //     // Assert
+    //     Assert.True(!string.IsNullOrEmpty(tokenJwt));
+    //     Assert.Equal(HttpStatusCode.OK, responseClient.StatusCode);
+    // }
+
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
     // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized - OK
-    // Cenário 2: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
+    // Cenário 2: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized - OK
     // Cenário 3: Ao preencher o parâmetro "Data" errado, é retornado o resultado algum erro
     // Cenário 4: Ao preencher o parâmetro "Data" corretamente, é retornado o resultado correto
     // Cenário 5: Ao preencher o parâmetro "CustomerName" errado, é retornado o resultado algum erro
