@@ -13,9 +13,11 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
     private readonly WebApplicationFactory<Program> _factory;
+    private readonly Faker _faker;
 
     public NpsAcceptanceTests(WebApplicationFactory<Program> factory)
     {
+        _faker = new Faker();
         _client = factory.CreateClient();
         _client.BaseAddress = new Uri("http://localhost:5115");
     }
@@ -305,7 +307,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         };
 
         var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
-        query["Data"] = "2025-01-01";
+        query["Data"] = _faker.Date.PastDateOnly().ToString("yyyy-MM-dd");
 
         // Atualizando a URL com os parâmetros de consulta
         uriBuilder.Query = query.ToString();
@@ -327,14 +329,13 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     // Cenário 2: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized - OK
     // Cenário 3: Ao preencher o parâmetro "Data" errado, é retornado o resultado algum erro -OK
     // Cenário 4: Ao preencher o parâmetro "Data" corretamente, é retornado o resultado correto
-    // Cenário 5: Ao preencher o parâmetro "CustomerName" errado, é retornado o resultado algum erro
-    // Cenário 6: Ao preencher o parâmetro "CustomerName" corretamente, é retornado o resultado correto
-    // Cenário 7: Ao preencher o parâmetro "Category" errado, é retornado o resultado algum erro
-    // Cenário 8: Ao preencher o parâmetro "Category" corretamente, é retornado o resultado correto
-    // Cenário 9: Ao preencher todos os parâmetros Data e CustomerName, é retornado sucesso
-    // Cenário 10: Ao preencher todos os parâmetros Data e Category, é retornado sucesso
-    // Cenário 11: Ao preencher todos os parâmetros Category e CustomerName, é retornado sucesso
-    // Cenário 12: Ao preencher todos os parâmetros corretamente, é retornado sucesso
+    // Cenário 5: Ao preencher o parâmetro "CustomerName" corretamente, é retornado o resultado correto
+    // Cenário 6: Ao preencher o parâmetro "Category" errado, é retornado o resultado algum erro
+    // Cenário 7: Ao preencher o parâmetro "Category" corretamente, é retornado o resultado correto
+    // Cenário 8: Ao preencher todos os parâmetros Data e CustomerName, é retornado sucesso
+    // Cenário 9: Ao preencher todos os parâmetros Data e Category, é retornado sucesso
+    // Cenário 10: Ao preencher todos os parâmetros Category e CustomerName, é retornado sucesso
+    // Cenário 11: Ao preencher todos os parâmetros corretamente, é retornado sucesso
 
     // GET - /v1/Nps/Score
     // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
