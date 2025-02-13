@@ -1,15 +1,15 @@
 using System.Net;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using NPS.Application;
 using NPS.Application.Services;
 using NPS.Core.Nps.ViewModels;
 
 namespace NPS.Test.Acceptance;
 
-public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
+public partial class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
     private readonly WebApplicationFactory<Program> _factory;
@@ -262,12 +262,6 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(HttpStatusCode.BadRequest, responseClient.StatusCode);
         Assert.Contains("errors", responseSerialized);
         Assert.True(responseDeserialized.Errors.Count >= 1);
-    }
-
-    public class ErrorResponse : ProblemDetails
-    {
-        public Dictionary<string, List<string>> Errors { get; set; }
-        public string TraceId { get; set; }
     }
 
     // [Fact]
