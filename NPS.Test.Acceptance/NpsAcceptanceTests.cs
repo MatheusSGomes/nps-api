@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using Bogus;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -278,7 +279,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Get_NpsResponses_DeveRetornarResultados_QuandoADataForInvalida()
+    public async Task Get_NpsResponses_DeveRetornarResultados_QuandoADataForValida()
     {
         // Arrange
         string uri = "v1/Nps/Responses";
@@ -308,6 +309,52 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
 
         var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
         query["Data"] = _faker.Date.PastDateOnly().ToString("yyyy-MM-dd");
+
+        // Atualizando a URL com os parâmetros de consulta
+        uriBuilder.Query = query.ToString();
+
+        _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
+        var responseClient = await _client.GetAsync(uriBuilder.Uri.PathAndQuery);
+
+        string responseSerialized = await responseClient.Content.ReadAsStringAsync();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, responseClient.StatusCode);
+        Assert.DoesNotContain(responseSerialized, "error");
+        Assert.True(responseClient.IsSuccessStatusCode);
+    }
+
+    [Fact]
+    public async Task Get_NpsResponses_DeveRetornarResultados_QuandoACustomerNameForValido()
+    {
+        // Arrange
+        string uri = "v1/Nps/Responses";
+        string mediaType = "application/json";
+
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
+            { "Authentication:Issuer", "nps.com.br" },
+            { "Authentication:Audience", "nps.com.br" },
+            { "Authentication:Expires", "30" },
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var tokenJwt = new AuthenticationService()
+            .SetUsername("Username TESTE").GenerateToken(configuration);
+
+        // Act
+        // Definindo a URL base
+        UriBuilder uriBuilder = new UriBuilder(_client.BaseAddress)
+        {
+            Path = "/v1/Nps/Responses"
+        };
+
+        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        query["CustomerName"] = _faker.Person.FullName;
 
         // Atualizando a URL com os parâmetros de consulta
         uriBuilder.Query = query.ToString();
