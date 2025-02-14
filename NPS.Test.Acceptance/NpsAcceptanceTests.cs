@@ -37,15 +37,16 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Post_AuthLogin_DeveRetornarUnauthorized_CasoUsernameEstejaIncorreto()
+    public async Task Post_AuthLogin_DeveRetornarUnauthorized_CasoUsernameEPasswordEstejamIncorretos()
     {
         // Arrange
         string uri = "/api/Auth/login";
         string mediaType = "application/json";
-        string usernameInexistente = "USERNAME_INEXISTENTE";
-        var serializeObject =
-            JsonConvert.SerializeObject(new { username = usernameInexistente, password = "password" });
+        string usernameInvalido = "USERNAME_INVALIDO";
+        string passwordInvalido = "PASSWORD_INVALIDO";
 
+        var serializeObject =
+            JsonConvert.SerializeObject(new { username = usernameInvalido, password = passwordInvalido });
         var content = new StringContent(serializeObject, Encoding.UTF8, mediaType);
 
         // Act
@@ -53,7 +54,26 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
 
         // Assert
         Assert.False(response.IsSuccessStatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
 
+    [Fact]
+    public async Task Post_AuthLogin_DeveRetornarUnauthorized_CasoUsernameEstejaIncorreto()
+    {
+        // Arrange
+        string uri = "/api/Auth/login";
+        string mediaType = "application/json";
+        string usernameInexistente = "USERNAME_INEXISTENTE";
+
+        var serializeObject =
+            JsonConvert.SerializeObject(new { username = usernameInexistente, password = "password" });
+        var content = new StringContent(serializeObject, Encoding.UTF8, mediaType);
+
+        // Act
+        var response = await _client.PostAsync(uri, content);
+
+        // Assert
+        Assert.False(response.IsSuccessStatusCode);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
@@ -64,8 +84,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         string uri = "/api/Auth/login";
         string mediaType = "application/json";
         string wrongPassword = "WRONG_PASSWORD";
-        var serializeObject = JsonConvert.SerializeObject(new { username = "admin", password = wrongPassword });
 
+        var serializeObject = JsonConvert.SerializeObject(new { username = "admin", password = wrongPassword });
         var content = new StringContent(serializeObject, Encoding.UTF8, mediaType);
 
         // Act
@@ -73,7 +93,6 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
 
         // Assert
         Assert.False(response.IsSuccessStatusCode);
-
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
@@ -83,8 +102,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "/api/Auth/login";
         string mediaType = "application/json";
-        var serializeObject = JsonConvert.SerializeObject(new { username = "admin", password = "password" });
 
+        var serializeObject = JsonConvert.SerializeObject(new { username = "admin", password = "password" });
         var content = new StringContent(serializeObject, Encoding.UTF8, mediaType);
 
         // Act
@@ -544,7 +563,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     // }
 
     // POST - /api/Auth/login
-    // Cenário 1 - Email e Senha errada, deve retornar um erro genérico "usuário ou senha inválido" e status - PENDENTE
+    // Cenário 1 - Email e Senha errada, deve retornar um erro genérico "usuário ou senha inválido" e status - OK
     // Cenário 2 - Email errado, deve retornar um erro genérico "usuário ou senha inválido" e status - OK
     // Cenário 3 - Senha errada, deve retornar um erro genérico "usuário ou senha inválido" e status - OK
     // Cenário 4 - Dados de acesso corretos - Deve retornar status de sucesso + Token - OK
