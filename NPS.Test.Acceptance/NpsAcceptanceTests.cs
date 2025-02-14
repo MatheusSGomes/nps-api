@@ -529,10 +529,10 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Get_NpsScore_DeveRetornarUnauthorized_QuandoONenhumTokenDeAcessoForEnviado()
+    public async Task Get_NpsScore_DeveRetornarStatusCodeUnauthorized_QuandoONenhumTokenDeAcessoForEnviado()
     {
         // Arrange
-        string uri = "v1/Nps/Responses";
+        string uri = "v1/Nps/Score";
 
         // Act
         var responseClient = await _client.GetAsync(uri);
@@ -543,10 +543,10 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Get_NpsScore_DeveRetornarUnauthorized_QuandoOTokenDeAcessoForInvalido()
+    public async Task Get_NpsScore_DeveRetornarStatusCodeUnauthorized_QuandoOTokenDeAcessoForInvalido()
     {
         // Arrange
-        string uri = "v1/Nps/Responses";
+        string uri = "v1/Nps/Score";
 
         var inMemorySettings = new Dictionary<string, string>
         {
@@ -572,6 +572,38 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.False(responseClient.IsSuccessStatusCode);
     }
 
+    [Fact]
+    public async Task Get_NpsScore_DeveRetornarStatusCodeOk_QuandoOTokenDeAcessoForValido()
+    {
+        // Arrange
+        string uri = "v1/Nps/Score";
+
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
+            { "Authentication:Issuer", "nps.com.br" },
+            { "Authentication:Audience", "nps.com.br" },
+            { "Authentication:Expires", "30" },
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var tokenJwt = new AuthenticationService()
+            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+
+        // Act
+        _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
+        var responseClient = await _client.GetAsync(uri);
+        var responseContent = JsonConvert.DeserializeObject<NpsScoreViewModel>(await responseClient.Content.ReadAsStringAsync());
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, responseClient.StatusCode);
+        Assert.True(responseClient.IsSuccessStatusCode);
+        Assert.NotNull(responseContent.Score);
+    }
+
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
     // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized - OK
@@ -584,8 +616,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     // Cenário 8: Ao preencher todos os parâmetros corretamente, é retornado sucesso - OK
 
     // GET - /v1/Nps/Score
-    // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
-    // Cenário 1: Valida se o objeto retornado contém a chave "score".
+    // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized - OK
+    // Cenário 1: Valida se o objeto retornado contém a chave "score". - OK
     // {
     //   "score": 0
     // }
