@@ -542,6 +542,36 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.False(responseClient.IsSuccessStatusCode);
     }
 
+    [Fact]
+    public async Task Get_NpsScore_DeveRetornarUnauthorized_QuandoOTokenDeAcessoForInvalido()
+    {
+        // Arrange
+        string uri = "v1/Nps/Responses";
+
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "Authentication:SecretKey", Guid.NewGuid().ToString() },
+            { "Authentication:Issuer", "ALEATÓRIO" },
+            { "Authentication:Audience", "ALEATÓRIO" },
+            { "Authentication:Expires", "30" },
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var tokenJwt = new AuthenticationService()
+            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+
+        // Act
+        _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
+        var responseClient = await _client.GetAsync(uri);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, responseClient.StatusCode);
+        Assert.False(responseClient.IsSuccessStatusCode);
+    }
+
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
     // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized - OK
