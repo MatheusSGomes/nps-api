@@ -252,7 +252,6 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange
         string uri = "v1/Nps/Responses";
-        string mediaType = "application/json";
 
         var inMemorySettings = new Dictionary<string, string>
         {
@@ -300,7 +299,6 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange
         string uri = "v1/Nps/Responses";
-        string mediaType = "application/json";
 
         var inMemorySettings = new Dictionary<string, string>
         {
@@ -346,7 +344,6 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange
         string uri = "v1/Nps/Responses";
-        string mediaType = "application/json";
 
         var inMemorySettings = new Dictionary<string, string>
         {
@@ -392,7 +389,6 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange
         string uri = "v1/Nps/Responses";
-        string mediaType = "application/json";
 
         var inMemorySettings = new Dictionary<string, string>
         {
@@ -440,7 +436,6 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange
         string uri = "v1/Nps/Responses";
-        string mediaType = "application/json";
 
         var inMemorySettings = new Dictionary<string, string>
         {
@@ -487,7 +482,6 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange
         string uri = "v1/Nps/Responses";
-        string mediaType = "application/json";
 
         var inMemorySettings = new Dictionary<string, string>
         {
@@ -533,7 +527,21 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.DoesNotContain(responseSerialized, "error");
         Assert.True(responseClient.IsSuccessStatusCode);
     }
-    
+
+    [Fact]
+    public async Task Get_NpsScore_DeveRetornarUnauthorized_QuandoONenhumTokenDeAcessoForEnviado()
+    {
+        // Arrange
+        string uri = "v1/Nps/Responses";
+
+        // Act
+        var responseClient = await _client.GetAsync(uri);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, responseClient.StatusCode);
+        Assert.False(responseClient.IsSuccessStatusCode);
+    }
+
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
     // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized - OK
