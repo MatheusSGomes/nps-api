@@ -21,4 +21,8 @@
       <ProjectReference Include="..\NPS.Core\NPS.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="appsettings.Test.json" />
+    </ItemGroup>
+
 </Project>

@@ -1,8 +1,10 @@
 using System.Net;
 using System.Text;
+using System.Web;
 using Bogus;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NPS.Application;
 using NPS.Application.Services;
@@ -15,12 +17,26 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     private readonly HttpClient _client;
     private readonly WebApplicationFactory<Program> _factory;
     private readonly Faker _faker;
+    private readonly IConfiguration _configuration;
 
     public NpsAcceptanceTests(WebApplicationFactory<Program> factory)
     {
         _faker = new Faker();
         _client = factory.CreateClient();
         _client.BaseAddress = new Uri("http://localhost:5115");
+        string testSettings = "appsettings.Test.json";
+
+        var currentDirectory = Directory.GetCurrentDirectory();
+        var configurationRoot = new ConfigurationBuilder()
+            .SetBasePath(currentDirectory)
+            .AddJsonFile(testSettings)
+            .Build();
+
+        var serviceProvider = new ServiceCollection()
+            .AddSingleton<IConfiguration>(configurationRoot)
+            .BuildServiceProvider();
+
+        _configuration = serviceProvider.GetRequiredService<IConfiguration>();
     }
 
     [Theory]
@@ -253,20 +269,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "v1/Nps/Responses";
 
-        var inMemorySettings = new Dictionary<string, string>
-        {
-            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
-            { "Authentication:Issuer", "nps.com.br" },
-            { "Authentication:Audience", "nps.com.br" },
-            { "Authentication:Expires", "30" },
-        };
-
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
-
         var tokenJwt = new AuthenticationService()
-            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+            .SetUsername(_faker.Person.UserName).GenerateToken(_configuration);
 
         // Act
         // Definindo a URL base
@@ -275,7 +279,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
             Path = "/v1/Nps/Responses"
         };
 
-        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
         query["Data"] = "VALOR_INVÁLIDO";
 
         // Atualizando a URL com os parâmetros de consulta
@@ -300,20 +304,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "v1/Nps/Responses";
 
-        var inMemorySettings = new Dictionary<string, string>
-        {
-            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
-            { "Authentication:Issuer", "nps.com.br" },
-            { "Authentication:Audience", "nps.com.br" },
-            { "Authentication:Expires", "30" },
-        };
-
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
-
         var tokenJwt = new AuthenticationService()
-            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+            .SetUsername(_faker.Person.UserName).GenerateToken(_configuration);
 
         // Act
         // Definindo a URL base
@@ -322,7 +314,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
             Path = "/v1/Nps/Responses"
         };
 
-        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
         query["Data"] = _faker.Date.PastDateOnly().ToString("yyyy-MM-dd");
 
         // Atualizando a URL com os parâmetros de consulta
@@ -345,20 +337,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "v1/Nps/Responses";
 
-        var inMemorySettings = new Dictionary<string, string>
-        {
-            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
-            { "Authentication:Issuer", "nps.com.br" },
-            { "Authentication:Audience", "nps.com.br" },
-            { "Authentication:Expires", "30" },
-        };
-
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
-
         var tokenJwt = new AuthenticationService()
-            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+            .SetUsername(_faker.Person.UserName).GenerateToken(_configuration);
 
         // Act
         // Definindo a URL base
@@ -367,7 +347,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
             Path = "/v1/Nps/Responses"
         };
 
-        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
         query["CustomerName"] = _faker.Person.FullName;
 
         // Atualizando a URL com os parâmetros de consulta
@@ -390,29 +370,16 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "v1/Nps/Responses";
 
-        var inMemorySettings = new Dictionary<string, string>
-        {
-            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
-            { "Authentication:Issuer", "nps.com.br" },
-            { "Authentication:Audience", "nps.com.br" },
-            { "Authentication:Expires", "30" },
-        };
-
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
-
         var tokenJwt = new AuthenticationService()
-            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+            .SetUsername(_faker.Person.UserName).GenerateToken(_configuration);
 
         // Act
-        // Definindo a URL base
         UriBuilder uriBuilder = new UriBuilder(_client.BaseAddress)
         {
             Path = "/v1/Nps/Responses"
         };
 
-        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
         query["Category"] = _faker.Random.String();
 
         // Atualizando a URL com os parâmetros de consulta
@@ -437,20 +404,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "v1/Nps/Responses";
 
-        var inMemorySettings = new Dictionary<string, string>
-        {
-            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
-            { "Authentication:Issuer", "nps.com.br" },
-            { "Authentication:Audience", "nps.com.br" },
-            { "Authentication:Expires", "30" },
-        };
-
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
-
         var tokenJwt = new AuthenticationService()
-            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+            .SetUsername(_faker.Person.UserName).GenerateToken(_configuration);
 
         // Act
         // Definindo a URL base
@@ -459,7 +414,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
             Path = "/v1/Nps/Responses"
         };
 
-        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
         string categoryParamValido = _faker.Random.Int(0, 100).ToString();
         query["Category"] = categoryParamValido;
 
@@ -483,20 +438,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "v1/Nps/Responses";
 
-        var inMemorySettings = new Dictionary<string, string>
-        {
-            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
-            { "Authentication:Issuer", "nps.com.br" },
-            { "Authentication:Audience", "nps.com.br" },
-            { "Authentication:Expires", "30" },
-        };
-
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
-
         var tokenJwt = new AuthenticationService()
-            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+            .SetUsername(_faker.Person.UserName).GenerateToken(_configuration);
 
         // Act
         // Definindo a URL base
@@ -505,7 +448,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
             Path = "/v1/Nps/Responses"
         };
 
-        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
         string categoryParamValido = _faker.Random.Int(0, 100).ToString();
         string customerNameParamValido = _faker.Person.FullName;
         string dataParamValido = _faker.Date.PastDateOnly().ToString("yyyy-MM-dd");
@@ -556,12 +499,12 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
             { "Authentication:Expires", "30" },
         };
 
-        var configuration = new ConfigurationBuilder()
+        var wrongConfiguration = new ConfigurationBuilder()
             .AddInMemoryCollection(inMemorySettings)
             .Build();
 
         var tokenJwt = new AuthenticationService()
-            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+            .SetUsername(_faker.Person.UserName).GenerateToken(wrongConfiguration);
 
         // Act
         _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
@@ -578,20 +521,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "v1/Nps/Score";
 
-        var inMemorySettings = new Dictionary<string, string>
-        {
-            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
-            { "Authentication:Issuer", "nps.com.br" },
-            { "Authentication:Audience", "nps.com.br" },
-            { "Authentication:Expires", "30" },
-        };
-
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
-
         var tokenJwt = new AuthenticationService()
-            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+            .SetUsername(_faker.Person.UserName).GenerateToken(_configuration);
 
         // Act
         _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
@@ -631,12 +562,12 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
             { "Authentication:Expires", "30" },
         };
 
-        var configuration = new ConfigurationBuilder()
+        var wrongConfiguration = new ConfigurationBuilder()
             .AddInMemoryCollection(inMemorySettings)
             .Build();
 
         var tokenJwt = new AuthenticationService()
-            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+            .SetUsername(_faker.Person.UserName).GenerateToken(wrongConfiguration);
 
         // Act
         _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
@@ -652,20 +583,9 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange
         string uri = "/v1/Nps/Summary";
-        var inMemorySettings = new Dictionary<string, string>
-        {
-            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
-            { "Authentication:Issuer", "nps.com.br" },
-            { "Authentication:Audience", "nps.com.br" },
-            { "Authentication:Expires", "30" },
-        };
-
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
 
         var tokenJwt = new AuthenticationService()
-            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+            .SetUsername(_faker.Person.UserName).GenerateToken(_configuration);
 
         // Act
         _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
@@ -681,42 +601,4 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(contentDeserialized.Promoters);
         Assert.NotNull(contentDeserialized.NpsScore);
     }
-
-
-    // TODAS PENDENTES DE TESTE:
-    // GET - /v1/Nps/Responses
-    // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized - OK
-    // Cenário 2: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized - OK
-    // Cenário 3: Ao preencher o parâmetro "Data" errado, é retornado o resultado algum erro -OK
-    // Cenário 4: Ao preencher o parâmetro "Data" corretamente, é retornado o resultado correto - OK
-    // Cenário 5: Ao preencher o parâmetro "CustomerName" corretamente, é retornado o resultado correto - OK
-    // Cenário 6: Ao preencher o parâmetro "Category" errado, é retornado o resultado algum erro - OK
-    // Cenário 7: Ao preencher o parâmetro "Category" corretamente, é retornado o resultado correto - OK
-    // Cenário 8: Ao preencher todos os parâmetros corretamente, é retornado sucesso - OK
-
-    // GET - /v1/Nps/Score
-    // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized - OK
-    // Cenário 1: Valida se o objeto retornado contém a chave "score". - OK
-    // {
-    //   "score": 0
-    // }
-
-    // GET - /v1/Nps/Summary
-    // Cenário 0: Caso nenhum token de acesso seja enviado, deve retornar um 401 e a mensagem de Unauthorized - OK
-    // Cenário 1: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized - OK
-    // Cenário 2: Valida se o objeto retornado contém as chaves "promoters", "neutrals", "detractors" e "npsScore".
-    // {
-    //   "promoters": 0,
-    //   "neutrals": 0,
-    //   "detractors": 0,
-    //   "npsScore": 0
-    // }
-
-    // POST - /api/Auth/login
-    // Cenário 1 - Email e Senha errada, deve retornar um erro genérico "usuário ou senha inválido" e status - OK
-    // Cenário 2 - Email errado, deve retornar um erro genérico "usuário ou senha inválido" e status - OK
-    // Cenário 3 - Senha errada, deve retornar um erro genérico "usuário ou senha inválido" e status - OK
-    // Cenário 4 - Dados de acesso corretos - Deve retornar status de sucesso + Token - OK
-
-    // TODO: Não usar configurações fixas, e sim as do ambiente de execução "Development", "Test", "Staging" nos testes de sucesso
 }
