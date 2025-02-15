@@ -618,6 +618,34 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.False(clientResponse.IsSuccessStatusCode);
     }
 
+    [Fact]
+    public async Task Get_NpsSummary_DeveRetornarUnauthorized_QuandoTokenEnviadoForInvalido()
+    {
+        // Arrange
+        string uri = "/v1/Nps/Summary";
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "Authentication:SecretKey", Guid.NewGuid().ToString() },
+            { "Authentication:Issuer", _faker.Random.String() },
+            { "Authentication:Audience", _faker.Random.String() },
+            { "Authentication:Expires", "30" },
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var tokenJwt = new AuthenticationService()
+            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+
+        // Act
+        _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
+        var clientResponse = await _client.GetAsync(uri);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, clientResponse.StatusCode);
+        Assert.False(clientResponse.IsSuccessStatusCode);
+    }
 
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
@@ -639,7 +667,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
 
     // GET - /v1/Nps/Summary
     // Cenário 0: Caso nenhum token de acesso seja enviado, deve retornar um 401 e a mensagem de Unauthorized - OK
-    // Cenário 1: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
+    // Cenário 1: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized - OK
     // Cenário 2: Valida se o objeto retornado contém as chaves "promoters", "neutrals", "detractors" e "npsScore".
     // {
     //   "promoters": 0,
