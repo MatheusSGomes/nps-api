@@ -1,10 +1,19 @@
 using System.IdentityModel.Tokens.Jwt;
+using Bogus;
+using Microsoft.Extensions.Configuration;
 using NPS.Application.Services;
 
 namespace NPS.Test.Services;
 
 public class AuthenticationServiceTest
 {
+    private readonly Faker _faker;
+
+    public AuthenticationServiceTest()
+    {
+        _faker = new Faker();
+    }
+
     [Fact]
     public void AuthenticationService_DeveImplementarUmaInterface()
     {
@@ -32,40 +41,46 @@ public class AuthenticationServiceTest
     public void GenerateJwtToken_DeveLancarExcecao_QuandoSecretSettingsForNula()
     {
         // Arrange
-        var inMemorySettings = new Dictionary<string, string>()
+        var username = _faker.Person.UserName;
+        var inMemorySettings = new Dictionary<string, string>
         {
-            { "Secret", null },
-            { "Expires", "Authentication:Expires" },
-            { "Issuer", "Authentication:Issuer" },
-            { "Audience", "Authentication:Audience" }
+            { "Authentication:SecretKey", null },
+            { "Authentication:Issuer", _faker.Random.Hash() },
+            { "Authentication:Audience", _faker.Random.Hash() },
+            { "Authentication:Expires", "30" },
         };
 
-        var authenticationService = new AuthenticationService();
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            authenticationService.GenerateJwtToken("user", inMemorySettings));
-        Assert.Equal("Chave de autenticação inválida ou vazia", exception.ParamName);
+            new AuthenticationService().SetUsername(username).GenerateToken(configuration));
+        Assert.Equal("Chave secreta inválida ou vazia", exception.ParamName);
     }
 
     [Fact]
     public void GenerateJwtToken_DeveLancarExcecao_QuandoSecretKeyForMenorQue256Bits()
     {
         // Arrange
-        var authenticationService = new AuthenticationService();
-        var username = "username1";
+        var username = _faker.Person.UserName;
         var inMemorySettings = new Dictionary<string, string>()
         {
-            { "Secret", "MINHA_CHAVE_SECRETA_INVALIDA" },
-            { "Expires", "Authentication:Expires" },
-            { "Issuer", "Authentication:Issuer" },
-            { "Audience", "Authentication:Audience" }
+            { "Authentication:SecretKey", "MINHA_CHAVE_SECRETA_INVALIDA" },
+            { "Authentication:Issuer", _faker.Random.Hash() },
+            { "Authentication:Audience", _faker.Random.Hash() },
+            { "Authentication:Expires", "30" },
         };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            authenticationService.GenerateJwtToken(username, inMemorySettings));
-        Assert.Equal("Chave de autenticação inválida ou vazia, menor que 256 bits (32 bytes/caracteres)", exception.ParamName);
+            new AuthenticationService().SetUsername(username).GenerateToken(configuration));
+        Assert.Equal("Chave secreta menor que 256 bits (32 bytes/caracteres)", exception.ParamName);
     }
 
     [Theory]
