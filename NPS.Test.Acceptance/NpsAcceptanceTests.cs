@@ -604,6 +604,21 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(responseContent.Score);
     }
 
+    [Fact]
+    public async Task Get_NpsSummary_DeveRetornarUnauthorized_QuandoNenhumTokenDeAcessoForEnviado()
+    {
+        // Arrange
+        string uri = "/v1/Nps/Summary";
+
+        // Act
+        var clientResponse = await _client.GetAsync(uri);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, clientResponse.StatusCode);
+        Assert.False(clientResponse.IsSuccessStatusCode);
+    }
+
+
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
     // Cenário 1: Caso não exista token, deve retornar um 401 e a mensagem de Unauthorized - OK
@@ -623,8 +638,9 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     // }
 
     // GET - /v1/Nps/Summary
-    // Cenário 0: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
-    // Cenário 1: Valida se o objeto retornado contém as chaves "promoters", "neutrals", "detractors" e "npsScore".
+    // Cenário 0: Caso nenhum token de acesso seja enviado, deve retornar um 401 e a mensagem de Unauthorized - OK
+    // Cenário 1: Caso o token de acesso seja inválido, deve retornar um 401 e a mensagem de Unauthorized
+    // Cenário 2: Valida se o objeto retornado contém as chaves "promoters", "neutrals", "detractors" e "npsScore".
     // {
     //   "promoters": 0,
     //   "neutrals": 0,
