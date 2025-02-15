@@ -605,7 +605,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Get_NpsSummary_DeveRetornarUnauthorized_QuandoNenhumTokenDeAcessoForEnviado()
+    public async Task Get_NpsSummary_DeveRetornarStatusCodeUnauthorized_QuandoNenhumTokenDeAcessoForEnviado()
     {
         // Arrange
         string uri = "/v1/Nps/Summary";
@@ -619,7 +619,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Get_NpsSummary_DeveRetornarUnauthorized_QuandoTokenEnviadoForInvalido()
+    public async Task Get_NpsSummary_DeveRetornarStatusCodeUnauthorized_QuandoTokenEnviadoForInvalido()
     {
         // Arrange
         string uri = "/v1/Nps/Summary";
@@ -646,6 +646,42 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(HttpStatusCode.Unauthorized, clientResponse.StatusCode);
         Assert.False(clientResponse.IsSuccessStatusCode);
     }
+
+    [Fact]
+    public async Task Get_NpsSummary_DeveRetornarStatusCodeSuccess_QuandoTokenForValido()
+    {
+        // Arrange
+        string uri = "/v1/Nps/Summary";
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "Authentication:SecretKey", "my_super_secret_key_E918128D-9D28-4156-AB70-9A8ADD1CA8C8" },
+            { "Authentication:Issuer", "nps.com.br" },
+            { "Authentication:Audience", "nps.com.br" },
+            { "Authentication:Expires", "30" },
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var tokenJwt = new AuthenticationService()
+            .SetUsername(_faker.Person.UserName).GenerateToken(configuration);
+
+        // Act
+        _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenJwt);
+        var clientResponse = await _client.GetAsync(uri);
+        var contentSerialized = await clientResponse.Content.ReadAsStringAsync();
+        var contentDeserialized = JsonConvert.DeserializeObject<NpsSummaryViewModel>(contentSerialized);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, clientResponse.StatusCode);
+        Assert.True(clientResponse.IsSuccessStatusCode);
+        Assert.NotNull(contentDeserialized.Detractors);
+        Assert.NotNull(contentDeserialized.Neutrals);
+        Assert.NotNull(contentDeserialized.Promoters);
+        Assert.NotNull(contentDeserialized.NpsScore);
+    }
+
 
     // TODAS PENDENTES DE TESTE:
     // GET - /v1/Nps/Responses
@@ -681,4 +717,6 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     // Cenário 2 - Email errado, deve retornar um erro genérico "usuário ou senha inválido" e status - OK
     // Cenário 3 - Senha errada, deve retornar um erro genérico "usuário ou senha inválido" e status - OK
     // Cenário 4 - Dados de acesso corretos - Deve retornar status de sucesso + Token - OK
+
+    // TODO: Não usar configurações fixas, e sim as do ambiente de execução "Development", "Test", "Staging" nos testes de sucesso
 }
