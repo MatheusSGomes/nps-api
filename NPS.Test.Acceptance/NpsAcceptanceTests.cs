@@ -42,8 +42,8 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "/api/Auth/login";
         string mediaType = "application/json";
-        string usernameInvalido = "USERNAME_INVALIDO";
-        string passwordInvalido = "PASSWORD_INVALIDO";
+        string usernameInvalido = _faker.Person.UserName;
+        string passwordInvalido = _faker.Random.String();
 
         var serializeObject =
             JsonConvert.SerializeObject(new { username = usernameInvalido, password = passwordInvalido });
@@ -63,7 +63,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         // Arrange
         string uri = "/api/Auth/login";
         string mediaType = "application/json";
-        string usernameInexistente = "USERNAME_INEXISTENTE";
+        string usernameInexistente = _faker.Person.UserName;
 
         var serializeObject =
             JsonConvert.SerializeObject(new { username = usernameInexistente, password = "password" });
@@ -195,7 +195,7 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         string uri = "/v1/Nps/Responses";
         string mediaType = "application/json";
         var objToSerialize = new
-            { score = 5, customerName = "Customer Name", comment = "Gerado pelo Teste de Aceitação" };
+            { score = 5, customerName = _faker.Person.UserName, comment = "Gerado pelo Teste de Aceitação" };
 
         var serializedObject = JsonConvert.SerializeObject(objToSerialize);
         var content = new StringContent(serializedObject, Encoding.UTF8, mediaType);
@@ -231,13 +231,13 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
         var tokenSettings = new Dictionary<string, string>()
         {
             { "Secret", Guid.NewGuid().ToString() },
-            { "Expires", "ALEATÓRIO" },
-            { "Issuer", "ALEATÓRIO" },
-            { "Audience", "ALEATÓRIO" }
+            { "Expires", _faker.Random.String() },
+            { "Issuer", _faker.Random.String() },
+            { "Audience", _faker.Random.String() }
         };
 
         var authService = new AuthenticationService();
-        var randomToken = authService.GenerateJwtToken("USERNAME_ALEATÓRIO", tokenSettings);
+        var randomToken = authService.GenerateJwtToken(_faker.Person.UserName, tokenSettings);
 
         // Act
         _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + randomToken);
