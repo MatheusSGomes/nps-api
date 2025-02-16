@@ -18,12 +18,14 @@ public class AuthenticationService : IAuthenticationService
 
     public string GenerateToken(IConfiguration configuration)
     {
+        double.TryParse(configuration["Authentication:Expires"], out double expires);
+
         var token = new JwtTokenBuilder()
             .AddUsername(_username)
             .AddSecret(configuration["Authentication:SecretKey"])
             .AddIssuer(configuration["Authentication:Issuer"])
             .AddAudience(configuration["Authentication:Audience"])
-            .AddExpires(double.Parse(configuration["Authentication:Expires"]))
+            .AddExpires(expires)
             .Build();
 
         return token;

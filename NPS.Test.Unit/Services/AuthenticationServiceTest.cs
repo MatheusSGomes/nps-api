@@ -25,19 +25,6 @@ public class AuthenticationServiceTest
     }
 
     [Fact]
-    public void GenerateJwtToken_DeveLancarExcecao_QuandoSettingsDictionaryForVazio()
-    {
-        // Arrange
-        var inMemorySettings = new Dictionary<string, string>();
-        var authenticationService = new AuthenticationService();
-
-        // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() =>
-            authenticationService.GenerateJwtToken("user", inMemorySettings));
-        Assert.Equal("Settings precisa ser configurado", exception.ParamName);
-    }
-
-    [Fact]
     public void GenerateJwtToken_DeveLancarExcecao_QuandoSecretSettingsForNula()
     {
         // Arrange
@@ -96,14 +83,19 @@ public class AuthenticationServiceTest
         var authenticationService = new AuthenticationService();
         var inMemorySettings = new Dictionary<string, string>()
         {
-            { "Secret", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
-            { "Expires", expireTimeInMinutes.ToString() },
-            { "Issuer", "Authentication:Issuer" },
-            { "Audience", "Authentication:Audience" }
+            { "Authentication:SecretKey", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
+            { "Authentication:Issuer", _faker.Random.Hash() },
+            { "Authentication:Audience", _faker.Random.Hash() },
+            { "Authentication:Expires", expireTimeInMinutes.ToString() },
         };
 
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var generatedToken = authenticationService.SetUsername(username).GenerateToken(configuration);
+
         // Act
-        var generatedToken = authenticationService.GenerateJwtToken(username, inMemorySettings);
         var jwtHandler = new JwtSecurityTokenHandler();
         var jwtToken = jwtHandler.ReadJwtToken(generatedToken);
 
@@ -125,14 +117,18 @@ public class AuthenticationServiceTest
         var authenticationService = new AuthenticationService();
         var inMemorySettings = new Dictionary<string, string>()
         {
-            { "Secret", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
-            { "Expires", "30" },
-            { "Issuer", "Authentication:Issuer" },
-            { "Audience", "Authentication:Audience" }
+            { "Authentication:SecretKey", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
+            { "Authentication:Issuer", _faker.Random.Hash() },
+            { "Authentication:Audience", _faker.Random.Hash() },
+            { "Authentication:Expires", "30" },
         };
 
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
         // Act
-        var generatedToken = authenticationService.GenerateJwtToken(username, inMemorySettings);
+        var generatedToken = authenticationService.SetUsername(username).GenerateToken(configuration);
         var jwtHandler = new JwtSecurityTokenHandler();
         var jwtToken = jwtHandler.ReadJwtToken(generatedToken);
         var subValue = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub).Value;
@@ -149,20 +145,24 @@ public class AuthenticationServiceTest
         var authenticationService = new AuthenticationService();
         var inMemorySettings = new Dictionary<string, string>()
         {
-            { "Secret", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
-            { "Expires", "30" },
-            { "Issuer", "Authentication:Issuer" },
-            { "Audience", "Authentication:Audience" }
+            { "Authentication:SecretKey", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
+            { "Authentication:Issuer", _faker.Random.Hash() },
+            { "Authentication:Audience", _faker.Random.Hash() },
+            { "Authentication:Expires", "30" },
         };
 
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
         // Act
-        var generateJwtToken = authenticationService.GenerateJwtToken(username, inMemorySettings);
+        var generateJwtToken = authenticationService.SetUsername(username).GenerateToken(configuration);
         var jwtHandler = new JwtSecurityTokenHandler();
         var jwtToken = jwtHandler.ReadJwtToken(generateJwtToken);
         var iss = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Iss).Value;
 
         // Assert
-        Assert.Equal(inMemorySettings["Issuer"], iss);
+        Assert.Equal(configuration["Authentication:Issuer"], iss);
     }
 
     // Cenário: Valida se o "aud" (audience) é o mesmo após gerado o token
@@ -174,20 +174,24 @@ public class AuthenticationServiceTest
         var authenticationService = new AuthenticationService();
         var inMemorySettings = new Dictionary<string, string>()
         {
-            { "Secret", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
-            { "Expires", "30" },
-            { "Issuer", "Authentication:Issuer" },
-            { "Audience", "Authentication:Audience" }
+            { "Authentication:SecretKey", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
+            { "Authentication:Issuer", _faker.Random.Hash() },
+            { "Authentication:Audience", _faker.Random.Hash() },
+            { "Authentication:Expires", "30" },
         };
 
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
         // Act
-        var generateJwtToken = authenticationService.GenerateJwtToken(username, inMemorySettings);
+        var generateJwtToken = authenticationService.SetUsername(username).GenerateToken(configuration);
         var jwtHandler = new JwtSecurityTokenHandler();
         var jwtToken = jwtHandler.ReadJwtToken(generateJwtToken);
         var audience = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Aud).Value;
 
         // Assert
-        Assert.Equal(inMemorySettings["Audience"], audience);
+        Assert.Equal(configuration["Authentication:Audience"], audience);
     }
 
     [Fact]
@@ -195,17 +199,21 @@ public class AuthenticationServiceTest
     {
         // Arrange
         var authenticationService = new AuthenticationService();
-        var username = "username1";
+        var username = _faker.Person.UserName;
         var inMemorySettings = new Dictionary<string, string>()
         {
-            { "Secret", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
-            { "Expires", "Authentication:Expires" },
-            { "Issuer", "Authentication:Issuer" },
-            { "Audience", "Authentication:Audience" }
+            { "Authentication:SecretKey", "MINHA_CHAVE_SECRETA_A53D39BF-80CF-46F3-BFBB-7A3B69F33D17" },
+            { "Authentication:Issuer", _faker.Random.Hash() },
+            { "Authentication:Audience", _faker.Random.Hash() },
+            { "Authentication:Expires", "30" },
         };
 
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
         // Act
-        var token = authenticationService.GenerateJwtToken(username, inMemorySettings);
+        var token = authenticationService.SetUsername(username).GenerateToken(configuration);
 
         // Assert
         var handler = new JwtSecurityTokenHandler();
@@ -220,7 +228,7 @@ public class AuthenticationServiceTest
         Assert.False(string.IsNullOrEmpty(jtiValue));
 
         // Testa se o valor de "jti" muda em chamadas subsequentes
-        var newToken = authenticationService.GenerateJwtToken(username, inMemorySettings);
+        var newToken = authenticationService.SetUsername(username).GenerateToken(configuration);
         var newJwtToken = handler.ReadJwtToken(newToken);
         var newJtiClaim = newJwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti);
         Assert.NotEqual(jtiValue, newJtiClaim?.Value);
