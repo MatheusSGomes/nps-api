@@ -244,16 +244,21 @@ public class NpsAcceptanceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange
         string uri = "/v1/Nps/Responses";
-        var tokenSettings = new Dictionary<string, string>()
+        var username = _faker.Person.UserName;
+        var inMemorySettings = new Dictionary<string, string>()
         {
-            { "Secret", Guid.NewGuid().ToString() },
-            { "Expires", _faker.Random.String() },
-            { "Issuer", _faker.Random.String() },
-            { "Audience", _faker.Random.String() }
+            { "Authentication:SecretKey", Guid.NewGuid().ToString() },
+            { "Authentication:Issuer", _faker.Random.Hash() },
+            { "Authentication:Audience", _faker.Random.Hash() },
+            { "Authentication:Expires", "30" },
         };
 
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
         var authService = new AuthenticationService();
-        var randomToken = authService.GenerateJwtToken(_faker.Person.UserName, tokenSettings);
+        var randomToken = authService.SetUsername(username).GenerateToken(configuration);
 
         // Act
         _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + randomToken);
