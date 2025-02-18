@@ -1,3 +1,4 @@
+using Bogus;
 using Microsoft.EntityFrameworkCore;
 using NPS.Core.Entities;
 using NPS.Infrastructure.Persistence;
@@ -11,6 +12,7 @@ public class NpsRepositoryTests
     private readonly NpsDbContext _context;
     private readonly NpsRepository _repository;
     private readonly UnitOfWork _unitOfWork;
+    private readonly Faker _faker;
 
     public NpsRepositoryTests()
     {
@@ -21,15 +23,16 @@ public class NpsRepositoryTests
         _context = new NpsDbContext(options);
         _repository = new NpsRepository(_context);
         _unitOfWork = new UnitOfWork(_context, _repository);
+        _faker = new Faker();
     }
 
     [Fact]
     public async Task SaveUserNps_DeveSalvarNpsCorreto()
     {
         // Arrange
-        var expectedScore = 10;
-        var expectedCustomerName = "Cliente Teste";
-        var expectedComment = "Comentário Teste";
+        var expectedScore = _faker.Random.Int(0, 10);
+        var expectedCustomerName = _faker.Person.UserName;
+        var expectedComment = _faker.Lorem.Paragraph();
         var nps = Nps.CreateResponse(expectedScore, expectedCustomerName, expectedComment);
 
         // Act

@@ -24,6 +24,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Reference Include="Bogus">
+        <HintPath>..\..\..\..\..\.nuget\packages\bogus\35.6.1\lib\net6.0\Bogus.dll</HintPath>
+      </Reference>
       <Reference Include="Microsoft.EntityFrameworkCore">
         <HintPath>..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\8.0.11\lib\net8.0\Microsoft.EntityFrameworkCore.dll</HintPath>
       </Reference>
