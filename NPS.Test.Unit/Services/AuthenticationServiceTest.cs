@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using Bogus;
 using Microsoft.Extensions.Configuration;
+using NPS.Application;
 using NPS.Application.Services;
 
 namespace NPS.Test.Services;
@@ -44,7 +45,7 @@ public class AuthenticationServiceTest
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() =>
             new AuthenticationService().SetUsername(username).GenerateToken(configuration));
-        Assert.Equal("Chave secreta inválida ou vazia", exception.ParamName);
+        Assert.Equal(JwtErrorMessages.InvalidSecret, exception.ParamName);
     }
 
     [Fact]
@@ -67,7 +68,7 @@ public class AuthenticationServiceTest
         // Act & Assert
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
             new AuthenticationService().SetUsername(username).GenerateToken(configuration));
-        Assert.Equal("Chave secreta menor que 256 bits (32 bytes/caracteres)", exception.ParamName);
+        Assert.Equal(JwtErrorMessages.InvalidSecretEncode, exception.ParamName);
     }
 
     [Theory]
