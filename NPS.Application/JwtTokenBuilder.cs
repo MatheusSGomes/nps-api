@@ -46,13 +46,13 @@ public class JwtTokenBuilder
     public void Validations()
     {
         if (_secret is null)
-            throw new ArgumentNullException("Chave secreta inválida ou vazia");
+            throw new ArgumentNullException(JwtErrorMessages.InvalidSecret);
 
         if (_username is null)
-            throw new ArgumentNullException("Username deve ser informato");
+            throw new ArgumentNullException(JwtErrorMessages.InvalidUsername);
 
         if (_expires < 0)
-            throw new ArgumentNullException("Tempo de expiração não pode ser negativo");
+            throw new ArgumentNullException(JwtErrorMessages.InvalidExpiration);
     }
 
     public string Build()
@@ -64,7 +64,7 @@ public class JwtTokenBuilder
         // 1 byte = 8 bits
         // 32 bytes = 256 bits
         if (encodedSecret.Length < 32)
-            throw new ArgumentOutOfRangeException("Chave secreta menor que 256 bits (32 bytes/caracteres)");
+            throw new ArgumentOutOfRangeException(JwtErrorMessages.InvalidSecretEncode);
 
         var claims = new[]
         {
