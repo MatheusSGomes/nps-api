@@ -12,14 +12,14 @@ public class DbConnectionFactory
         _connectionString = connectionString ?? throw new ArgumentException(nameof(connectionString), "String de conexão não pode ser nula");
     }
 
-    public DbConnection CreateConnection()
-    {
-        if (string.IsNullOrEmpty(_connectionString))
-            throw new Exception("String de conexão não pode ser nula");
-
-        var sqlConnection = new SqlConnection(_connectionString);
-        return sqlConnection;
-    }
+    // public DbConnection CreateConnection()
+    // {
+    //     if (string.IsNullOrEmpty(_connectionString))
+    //         throw new Exception("String de conexão não pode ser nula");
+    //
+    //     var sqlConnection = new SqlConnection(_connectionString);
+    //     return sqlConnection;
+    // }
 
     public async Task<DbConnection> CreateConnectionAsync()
     {
