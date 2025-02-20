@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <Folder Include="results\" />
+      <Folder Include="scripts\common\" />
     </ItemGroup>
 
 </Project>
