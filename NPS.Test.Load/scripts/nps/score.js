@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { sleep, check } from 'k6';
-import {BASE_URL} from "../config/config.js";
-import { generateJwtToken } from "../common/jwt_generate.js";
+import {BASE_URL} from "../../config/config.js";
+import { generateJwtToken } from "../../common/jwt_generate.js";
 
 export const options = {
   // vus: 1,
