@@ -12,20 +12,32 @@ export const options = {
   ],
 };
 
+function generateJwtToken()
+{
+  const credentials = { username: "admin", password: "password" };
+  const loginHeaders = {
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  const resLogin = http.post(`${BASE_URL}/api/Auth/login`, JSON.stringify(credentials), loginHeaders);
+  return resLogin.json().token;
+}
+
 export default function() {
-  let res = http.get(`${BASE_URL}/v1/Nps/Score`);
-
-  check(res, { "status is 200": (res) => res.status === 200 });
-
-  check(response, {
-    'Corpo contém conteúdo esperado': (r) => r.body.includes('score'),
-  });
-
-  check(response, {
-    'Contém a chave score': (r) => {
-      const jsonBody = JSON.parse(r.body);
-      return jsonBody.score != null;
+  const scoreHeaders = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + generateJwtToken()
     },
+  };
+
+  let res = http.get(`${BASE_URL}/v1/Nps/Score`, scoreHeaders);
+  const jsonResponse = res.json();
+
+  check(res, { "Status is 200": (res) => res.status === 200 });
+
+  check(res, {
+    'Body contains score key': (r) => jsonResponse.score != null,
   });
 
   sleep(1);
