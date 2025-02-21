@@ -26,7 +26,7 @@ export default function () {
     let res = http.get(`${BASE_URL}/v1/Nps/Score`, scoreHeaders);
     const jsonResponse = res.json();
 
-    check(res, {"Status is 200": (res) => res.status === 200});
+    check(res, {"Status is 200": (r) => r.status === 200});
 
     check(res, {
         'Body contains score key': (r) => jsonResponse.score != null,
