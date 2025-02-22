@@ -132,3 +132,13 @@ Comando para aplicar a migration no banco de dados:
 ```bash
 dotnet ef database update --project ./NPS.Infrastructure/ --startup-project ./NPS.API/
 ```
+
+Para executar testes de carga:
+```bash
+k6 run NPS.Test.Load/scripts/nps/post_responses.js
+```
+
+Adicionar a flag --http-debug para ver requisições:
+```bash
+k6 run --http-debug NPS.Test.Load/scripts/nps/post_responses.js
+```
