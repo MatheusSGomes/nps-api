@@ -31,5 +31,5 @@ export default function () {
         "Body first result contains 'comment' key": (r) => r.json().comment !== null,
     });
 
-    sleep(1);
+    sleep(0.5); // Simula uma pausa de 500ms entre as requisições
 }

@@ -31,5 +31,5 @@ export default function() {
         "Body contains 'detractors' key": (r) => r.json().detractors != null,
     });
 
-    sleep(1);
+    sleep(0.5); // Simula uma pausa de 500ms entre as requisições
 }

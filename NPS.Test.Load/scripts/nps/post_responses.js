@@ -29,5 +29,5 @@ export default function() {
         "Status is 200": (r) => r.status === 200
     });
 
-    sleep(1);
+    sleep(0.5); // Simula uma pausa de 500ms entre as requisições
 }

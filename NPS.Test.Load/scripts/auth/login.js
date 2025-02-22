@@ -31,5 +31,5 @@ export default function() {
         'Token exists': (r) => resLogin.json().token != null,
     });
 
-    sleep(1);
+    sleep(0.5); // Simula uma pausa de 500ms entre as requisições
 }
