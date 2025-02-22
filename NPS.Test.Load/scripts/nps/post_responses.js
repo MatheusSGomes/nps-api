@@ -1,6 +1,7 @@
 import http from 'k6/http';
 import {sleep, check} from 'k6';
 import {BASE_URL} from "../../config/config.js";
+import { getRandomNumber } from "../../common/random_number_generate.js";
 
 export const options = {
     // interaction: 1,
@@ -9,10 +10,6 @@ export const options = {
         { duration: '1m30s', target: 10 },
         { duration: '20s', target: 0 },
     ],
-}
-
-function getRandomNumber(min, max) {
-    return Math.round(Math.random() * (max - min) + min);
 }
 
 export default function() {
@@ -27,9 +24,6 @@ export default function() {
     }
 
     const response = http.post(`${BASE_URL}/v1/Nps/Responses`, JSON.stringify(scoreResponse), headers);
-
-    console.log("JSON STRINGIFY: ", JSON.stringify(scoreResponse));
-    console.log("RESPONSE: ", response);
 
     check(response, {
         "Status is 200": (r) => r.status === 200
