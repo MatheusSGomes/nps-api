@@ -4,6 +4,14 @@ import {BASE_URL, MASTER_PASSWORD, MASTER_USERNAME} from "../../config/config.js
 
 export const options = {
     // interaction: 1,
+    tags: {
+        test_name: "Teste_Carga_Post_Login",
+        environment: "TST"
+    },
+    thresholds: {
+        'http_req_duration{status:200}': ['p(95)<500'], // p95 abaixo de 500ms
+        http_req_duration: ['p(90)<500'], // 90% das requisições devem ser < 500ms
+    },
     stages: [
       { duration: '30s', target: 20 },
       { duration: '1m30s', target: 10 },
