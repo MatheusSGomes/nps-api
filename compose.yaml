@@ -12,5 +12,13 @@ services:
     volumes:
       - npsapp_sqlserver_data:/mcr.microsoft.com/mssql/server
 
+  sonarqube:
+    container_name: sonarqube_npsapp
+    image: sonarqube:latest
+    ports:
+      - '9000:9000'
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+
 volumes:
   npsapp_sqlserver_data:

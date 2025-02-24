@@ -124,6 +124,7 @@ dotnet ef migrations add Initial --project ./NPS.Infrastructure/ --startup-proje
 ```
 
 Para desfazer a migração:
+
 ```bash
 dotnet ef migrations remove
 ```
@@ -141,4 +142,21 @@ k6 run NPS.Test.Load/scripts/nps/post_responses.js
 Adicionar a flag --http-debug para ver requisições:
 ```bash
 k6 run --http-debug NPS.Test.Load/scripts/nps/post_responses.js
+```
+
+Para iniciar o Sonar e SQL Server localmente:
+```bash
+docker-compose up -d
+```
+
+Acessar: localhost:9000
+
+Credenciais sonar:
+Username: admin
+Password: admin
+
+Para verificar os logs localmente:
+
+```bash
+docker-compose logs -f sonarqube
 ```
