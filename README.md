@@ -144,7 +144,7 @@ Adicionar a flag --http-debug para ver requisições:
 k6 run --http-debug NPS.Test.Load/scripts/nps/post_responses.js
 ```
 
-Para iniciar o Sonar e SQL Server localmente:
+Para iniciar o Sonar, SQL Server e Redis localmente:
 ```bash
 docker-compose up -d
 ```
@@ -159,4 +159,15 @@ Para verificar os logs localmente:
 
 ```bash
 docker-compose logs -f sonarqube
+```
+
+## Redis
+Entrar no container do Redis:
+```bash
+docker exec -it redis_npsapp bash
+```
+
+Para acessar Redis-CLI:
+```bash
+redis-cli
 ```
