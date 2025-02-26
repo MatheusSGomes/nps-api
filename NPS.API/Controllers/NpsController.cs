@@ -32,6 +32,7 @@ public class NpsController : ControllerBase
     [Authorize]
     public async Task<ActionResult<NpsScoreViewModel>> GetNpsScore()
     {
+        // TODO: Adicionar cache distribuído no retorno com o tempo limite de 3 minutos
         return Ok(await _npsQueryService.GetNpsScore());
     }
 
