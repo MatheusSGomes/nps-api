@@ -10,6 +10,10 @@ builder.AddMediatR();
 builder.AddJwtAuth();
 
 builder.Services.AddAuthorization();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379";
+});
 
 var app = builder.Build();
 
