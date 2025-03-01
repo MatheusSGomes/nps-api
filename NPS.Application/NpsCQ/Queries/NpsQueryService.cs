@@ -1,7 +1,4 @@
-using System.Text;
-using Microsoft.Extensions.Caching.Distributed;
-using Newtonsoft.Json;
-using NPS.Core.Entities;
+using NPS.Application.Services;
 using NPS.Core.Nps.Filters;
 using NPS.Core.Nps.ViewModels;
 using NPS.Infrastructure.Data.Queries;
@@ -11,43 +8,28 @@ namespace NPS.Application.NpsCQ.Queries;
 public class NpsQueryService : INpsQueryService
 {
     private readonly INpsQuery _npsQuery;
-    private readonly IDistributedCache _distributedCache;
+    private readonly ICacheService _cacheService;
 
-    public NpsQueryService(INpsQuery npsQuery, IDistributedCache distributedCache)
+    public NpsQueryService(INpsQuery npsQuery, ICacheService cacheService)
     {
         _npsQuery = npsQuery;
-        _distributedCache = distributedCache;
+        _cacheService = cacheService;
     }
 
     public async Task<NpsScoreViewModel> GetNpsScore()
     {
-        int resScore;
-        string cacheKey = "nps";
-        string serializedNps;
+        var cacheKey = $"npsScore";
+        var cachedEntity = await _cacheService.GetFromCacheAsync<NpsScoreViewModel>(cacheKey);
 
-        var redisNps = await _distributedCache.GetAsync(cacheKey);
+        if (cachedEntity != null)
+            return cachedEntity;
 
-        if (redisNps is not null)
-        {
-            serializedNps = Encoding.UTF8.GetString(redisNps);
-            resScore = JsonConvert.DeserializeObject<int>(serializedNps)!;
-        }
-        else
-        {
-            resScore = await _npsQuery.GetNpsScore();
+        var score = await _npsQuery.GetNpsScore();
 
-            // Set Cache
-            serializedNps = JsonConvert.SerializeObject(resScore);
-            redisNps = Encoding.UTF8.GetBytes(serializedNps);
+        if (score != null)
+            await _cacheService.SetToCacheAsync(cacheKey, cachedEntity);
 
-            var options = new DistributedCacheEntryOptions()
-                .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
-                .SetSlidingExpiration(TimeSpan.FromMinutes(2));
-
-            await _distributedCache.SetAsync(cacheKey, redisNps, options);
-        }
-
-        return new NpsScoreViewModel(resScore);
+        return new NpsScoreViewModel(score);
     }
 
     public async Task<IEnumerable<NpsFullResponseViewModel>> GetNpsResponses(NpsFilters filters)
