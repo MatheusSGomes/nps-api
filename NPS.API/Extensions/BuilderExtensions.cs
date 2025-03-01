@@ -29,6 +29,7 @@ public static class BuilderExtensions
         builder.Services.AddScoped(typeof(INpsQuery), typeof(NpsQuery));
         builder.Services.AddScoped(typeof(INpsQueryService), typeof(NpsQueryService));
         builder.Services.AddScoped(typeof(IAuthenticationService), typeof(AuthenticationService));
+        builder.Services.AddScoped(typeof(ICacheService), typeof(RedisCacheService));
     }
 
     public static void AddSqlServer(this WebApplicationBuilder builder)
