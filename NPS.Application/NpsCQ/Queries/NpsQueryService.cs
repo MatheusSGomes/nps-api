@@ -40,6 +40,17 @@ public class NpsQueryService : INpsQueryService
 
     public async Task<NpsSummaryViewModel> GetNpsSummary()
     {
-        return await _npsQuery.GetNpsSummary();
+        var cacheKey = $"npsSummary";
+        var cachedSummary = await _cacheService.GetFromCacheAsync<NpsSummaryViewModel>(cacheKey);
+
+        if (cachedSummary != null)
+            return cachedSummary;
+
+        var summary = await _npsQuery.GetNpsSummary();
+
+        if (summary != null)
+            await _cacheService.SetToCacheAsync(cacheKey, summary);
+
+        return summary;
     }
 }
