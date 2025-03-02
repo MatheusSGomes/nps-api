@@ -11,7 +11,7 @@ public class NpsQuery : Query, INpsQuery
     {
     }
 
-    public async Task<int> GetNpsScore()
+    public async Task<string> GetNpsScore()
     {
         const string sql = @"
                 SELECT
@@ -22,7 +22,7 @@ public class NpsQuery : Query, INpsQuery
                     (SELECT COUNT(Score) FROM [Nps] WHERE Score <= 6) * 100.0 /
                     (SELECT COUNT(*) FROM [Nps]) AS Score;";
 
-        return await QueryFirstAsync<int>(sql);
+        return await QueryFirstAsync<string>(sql);
     }
 
     public async Task<IEnumerable<NpsFullResponseViewModel>> GetNpsResponses(NpsFilters filters)

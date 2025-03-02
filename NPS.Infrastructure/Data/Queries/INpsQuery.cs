@@ -5,7 +5,7 @@ namespace NPS.Infrastructure.Data.Queries;
 
 public interface INpsQuery
 {
-    Task<int> GetNpsScore();
+    Task<string> GetNpsScore();
     Task<IEnumerable<NpsFullResponseViewModel>> GetNpsResponses(NpsFilters filters);
     Task<NpsSummaryViewModel> GetNpsSummary();
 }

@@ -19,17 +19,18 @@ public class NpsQueryService : INpsQueryService
     public async Task<NpsScoreViewModel> GetNpsScore()
     {
         var cacheKey = $"npsScore";
-        var cachedEntity = await _cacheService.GetFromCacheAsync<NpsScoreViewModel>(cacheKey);
+        var cachedEntity = await _cacheService.GetFromCacheAsync<string>(cacheKey);
 
         if (cachedEntity != null)
-            return cachedEntity;
+            return new NpsScoreViewModel(cachedEntity);
 
-        var score = await _npsQuery.GetNpsScore();
+        string score = await _npsQuery.GetNpsScore();
+        string scoreWithoutFloat = score.Split(".").FirstOrDefault();
 
-        if (score != null)
-            await _cacheService.SetToCacheAsync(cacheKey, cachedEntity);
+        if (scoreWithoutFloat != null)
+            await _cacheService.SetToCacheAsync(cacheKey, scoreWithoutFloat);
 
-        return new NpsScoreViewModel(score);
+        return new NpsScoreViewModel(scoreWithoutFloat);
     }
 
     public async Task<IEnumerable<NpsFullResponseViewModel>> GetNpsResponses(NpsFilters filters)
